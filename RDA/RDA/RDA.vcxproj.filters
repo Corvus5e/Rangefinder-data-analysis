@@ -13,10 +13,30 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Заголовочные файлы\rda">
+      <UniqueIdentifier>{49a9cebd-05ac-40b3-9440-cea252d37a26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\rda">
+      <UniqueIdentifier>{9c545527-185d-4df7-a978-b4f7e7d7d4f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Файлы ресурсов</Filter>
     </ClCompile>
+    <ClCompile Include="rda\common.cpp">
+      <Filter>Файлы исходного кода\rda</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="rda\common.h">
+      <Filter>Заголовочные файлы\rda</Filter>
+    </ClInclude>
+    <ClInclude Include="rda\vector.h">
+      <Filter>Заголовочные файлы\rda</Filter>
+    </ClInclude>
+    <ClInclude Include="rda\rdaException.h">
+      <Filter>Заголовочные файлы\rda</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
