@@ -2,6 +2,7 @@
 #include <math.h>
 #include <rda\common.h>
 #include <rda\vector.h>
+#include <rda\line.h>
 
 void rda::split(std::string str, char* delimiter, std::vector<std::string>& parts)
 {
@@ -69,6 +70,16 @@ double rda::distancePointToSegment(rda::Point& segment_start, rda::Point& segmen
 	rda::Point pb(segment_start.x * (1.0 - t) + segment_end.x * t, segment_start.y * (1.0 - t) + segment_end.y * t, 0);
 
 	return rda::distancePointToPoint(point, pb);
+}
+
+double rda::distanceSegmentToSegment(rda::Line& line_1, rda::Line& line_2)
+{	
+	std::vector<double> dists;
+	dists.push_back(rda::distancePointToSegment(line_1.start(), line_1.end(), line_2.start()));
+	dists.push_back(rda::distancePointToSegment(line_1.start(), line_1.end(), line_2.end()));
+	dists.push_back(rda::distancePointToSegment(line_2.start(), line_2.end(), line_1.start()));
+	dists.push_back(rda::distancePointToSegment(line_2.start(), line_2.end(), line_1.end()));	
+	return (*std::min_element(dists.begin(), dists.end()));
 }
 
 rda::BoundingBox rda::boundingBox(rda::CloudPtr cloud)

@@ -19,6 +19,12 @@
     <Filter Include="Файлы исходного кода\rda">
       <UniqueIdentifier>{9c545527-185d-4df7-a978-b4f7e7d7d4f0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Заголовочные файлы\rda\io">
+      <UniqueIdentifier>{7435ea5d-7faa-40fa-93c9-23ef701c119c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\rda\io">
+      <UniqueIdentifier>{e673bee7-d50a-4467-82fb-ba852887d814}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -26,6 +32,24 @@
     </ClCompile>
     <ClCompile Include="rda\common.cpp">
       <Filter>Файлы исходного кода\rda</Filter>
+    </ClCompile>
+    <ClCompile Include="rda\line.cpp">
+      <Filter>Файлы исходного кода\rda</Filter>
+    </ClCompile>
+    <ClCompile Include="rda\cloud_part.cpp">
+      <Filter>Файлы исходного кода\rda</Filter>
+    </ClCompile>
+    <ClCompile Include="rda\approximied_cloud_part.cpp">
+      <Filter>Файлы исходного кода\rda</Filter>
+    </ClCompile>
+    <ClCompile Include="rda\io\console.cpp">
+      <Filter>Файлы исходного кода\rda\io</Filter>
+    </ClCompile>
+    <ClCompile Include="rda\io\io.cpp">
+      <Filter>Файлы исходного кода\rda\io</Filter>
+    </ClCompile>
+    <ClCompile Include="rda\io\vizualization.cpp">
+      <Filter>Файлы исходного кода\rda\io</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -35,8 +59,26 @@
     <ClInclude Include="rda\vector.h">
       <Filter>Заголовочные файлы\rda</Filter>
     </ClInclude>
-    <ClInclude Include="rda\rdaException.h">
+    <ClInclude Include="rda\rda_exception.h">
       <Filter>Заголовочные файлы\rda</Filter>
+    </ClInclude>
+    <ClInclude Include="rda\line.h">
+      <Filter>Заголовочные файлы\rda</Filter>
+    </ClInclude>
+    <ClInclude Include="rda\cloud_part.h">
+      <Filter>Заголовочные файлы\rda</Filter>
+    </ClInclude>
+    <ClInclude Include="rda\approximied_cloud_part.h">
+      <Filter>Заголовочные файлы\rda</Filter>
+    </ClInclude>
+    <ClInclude Include="rda\io\console.h">
+      <Filter>Заголовочные файлы\rda\io</Filter>
+    </ClInclude>
+    <ClInclude Include="rda\io\io.h">
+      <Filter>Заголовочные файлы\rda\io</Filter>
+    </ClInclude>
+    <ClInclude Include="rda\io\vizualization.h">
+      <Filter>Заголовочные файлы\rda\io</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

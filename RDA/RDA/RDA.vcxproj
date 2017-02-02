@@ -64,11 +64,23 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="rda\approximied_cloud_part.cpp" />
+    <ClCompile Include="rda\cloud_part.cpp" />
     <ClCompile Include="rda\common.cpp" />
+    <ClCompile Include="rda\io\console.cpp" />
+    <ClCompile Include="rda\io\io.cpp" />
+    <ClCompile Include="rda\io\vizualization.cpp" />
+    <ClCompile Include="rda\line.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="rda\approximied_cloud_part.h" />
+    <ClInclude Include="rda\cloud_part.h" />
     <ClInclude Include="rda\common.h" />
-    <ClInclude Include="rda\rdaException.h" />
+    <ClInclude Include="rda\io\console.h" />
+    <ClInclude Include="rda\io\io.h" />
+    <ClInclude Include="rda\io\vizualization.h" />
+    <ClInclude Include="rda\line.h" />
+    <ClInclude Include="rda\rda_exception.h" />
     <ClInclude Include="rda\vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

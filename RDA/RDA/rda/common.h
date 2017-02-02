@@ -19,6 +19,14 @@ namespace rda {
 
 	typedef pcl::PointCloud<pcl::PointXYZ>::Ptr CloudPtr;
 
+	struct RPoint {
+		double x_robot;
+		double y_robot;
+		double angle_robot;
+
+		RPoint(double x_rob, double y_rob, double angle_rob) : x_robot(x_rob), y_robot(y_rob), angle_robot(angle_rob) { }
+	};
+
 	struct Range {
 
 		int start;
@@ -31,6 +39,8 @@ namespace rda {
 
 	typedef struct { Point bottom; double height; double width; } BoundingBox;	
 
+	class Line;
+
 	void split(std::string str, char* delimiter, std::vector<std::string>& parts);
 
 	double distancePointToLine(pcl::PointXYZ& line_start, pcl::PointXYZ& line_end, pcl::PointXYZ& point);
@@ -38,6 +48,8 @@ namespace rda {
 	double distancePointToPoint(rda::Point& point_1, rda::Point& point_2);
 
 	double distancePointToSegment(rda::Point& segment_start, rda::Point& segment_end, rda::Point& point);	
+
+	double distanceSegmentToSegment(rda::Line& line_1, rda::Line& line_2);
 
 	template<typename T, class InputIterator>
 	T mean_value(InputIterator begin, InputIterator end)
