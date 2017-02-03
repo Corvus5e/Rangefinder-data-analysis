@@ -39,20 +39,12 @@ namespace rda {
 
 	typedef struct { Point bottom; double height; double width; } BoundingBox;	
 
-	class Line;
-
 	void split(std::string str, char* delimiter, std::vector<std::string>& parts);
-
-	double distancePointToLine(pcl::PointXYZ& line_start, pcl::PointXYZ& line_end, pcl::PointXYZ& point);
-
-	double distancePointToPoint(rda::Point& point_1, rda::Point& point_2);
-
-	double distancePointToSegment(rda::Point& segment_start, rda::Point& segment_end, rda::Point& point);	
-
-	double distanceSegmentToSegment(rda::Line& line_1, rda::Line& line_2);
+	
+	double distancePointToPoint(rda::Point& point_1, rda::Point& point_2);	
 
 	template<typename T, class InputIterator>
-	T mean_value(InputIterator begin, InputIterator end)
+	T meanValue(InputIterator begin, InputIterator end)
 	{
 		T mean = T(0);
 		auto size = end - begin;
@@ -65,9 +57,9 @@ namespace rda {
 	}
 
 	template<typename T, class InputIterator>
-	T standart_deviation(InputIterator begin, InputIterator end, T& mean)
+	T standartDeviation(InputIterator begin, InputIterator end, T& mean)
 	{
-		mean = mean_value<T>(begin, end);
+		mean = meanValue<T>(begin, end);
 		T sum = 0;
 		auto size = end - begin;
 

@@ -5,7 +5,7 @@
 #include <vector>
 #include <map>
 
-#include <rda\io\GL\glut.h>
+#include <GL\glut.h>
 #include <pcl\point_types.h>
 #include <pcl\point_cloud.h>
 

@@ -32,7 +32,6 @@ rda::Vector rda::Line::directionVector()
 
 rda::Point rda::Line::middlePoint()
 {
-
 	return rda::Point( (start().x + end().x) / 2.0, (start().y + end().y) / 2.0, (start().z + end().z) / 2.0 );
 }
 

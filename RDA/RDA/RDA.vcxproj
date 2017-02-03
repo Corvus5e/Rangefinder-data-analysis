@@ -19,6 +19,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v100</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -37,8 +38,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(PCL_ROOT)\include\pcl-1.6;$(ProjectDir);$(EIGEN_ROOT)\include;$(BOOST_ROOT)\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(PCL_ROOT)\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(PCL_ROOT)\include\pcl-1.6;$(ProjectDir);$(EIGEN_ROOT)\include;$(BOOST_ROOT)\include;$(GLUT_ROOT)\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(PCL_ROOT)\lib;$(GLUT_ROOT)\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -67,6 +68,12 @@
     <ClCompile Include="rda\approximied_cloud_part.cpp" />
     <ClCompile Include="rda\cloud_part.cpp" />
     <ClCompile Include="rda\common.cpp" />
+    <ClCompile Include="rda\curve.cpp" />
+    <ClCompile Include="rda\function\ApproximateMethod.cpp" />
+    <ClCompile Include="rda\function\BisectionMethod.cpp" />
+    <ClCompile Include="rda\function\Derivative.cpp" />
+    <ClCompile Include="rda\function\Function.cpp" />
+    <ClCompile Include="rda\function\LeastSquares.cpp" />
     <ClCompile Include="rda\io\console.cpp" />
     <ClCompile Include="rda\io\io.cpp" />
     <ClCompile Include="rda\io\vizualization.cpp" />
@@ -76,6 +83,13 @@
     <ClInclude Include="rda\approximied_cloud_part.h" />
     <ClInclude Include="rda\cloud_part.h" />
     <ClInclude Include="rda\common.h" />
+    <ClInclude Include="rda\curve.h" />
+    <ClInclude Include="rda\function\ApproximateMethod.h" />
+    <ClInclude Include="rda\function\BisectionMethod.h" />
+    <ClInclude Include="rda\function\Derivative.h" />
+    <ClInclude Include="rda\function\EquationSolver.h" />
+    <ClInclude Include="rda\function\Function.h" />
+    <ClInclude Include="rda\function\LeastSquares.h" />
     <ClInclude Include="rda\io\console.h" />
     <ClInclude Include="rda\io\io.h" />
     <ClInclude Include="rda\io\vizualization.h" />

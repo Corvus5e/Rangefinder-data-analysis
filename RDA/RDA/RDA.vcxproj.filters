@@ -25,6 +25,12 @@
     <Filter Include="Файлы исходного кода\rda\io">
       <UniqueIdentifier>{e673bee7-d50a-4467-82fb-ba852887d814}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Заголовочные файлы\rda\function">
+      <UniqueIdentifier>{c1af0459-a4cc-4918-b040-387acadda531}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы исходного кода\rda\function">
+      <UniqueIdentifier>{0c1a56e4-e8b9-42cc-8b2c-13a25379d0ce}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -50,6 +56,24 @@
     </ClCompile>
     <ClCompile Include="rda\io\vizualization.cpp">
       <Filter>Файлы исходного кода\rda\io</Filter>
+    </ClCompile>
+    <ClCompile Include="rda\curve.cpp">
+      <Filter>Файлы исходного кода\rda</Filter>
+    </ClCompile>
+    <ClCompile Include="rda\function\ApproximateMethod.cpp">
+      <Filter>Файлы исходного кода\rda\function</Filter>
+    </ClCompile>
+    <ClCompile Include="rda\function\BisectionMethod.cpp">
+      <Filter>Файлы исходного кода\rda\function</Filter>
+    </ClCompile>
+    <ClCompile Include="rda\function\Derivative.cpp">
+      <Filter>Файлы исходного кода\rda\function</Filter>
+    </ClCompile>
+    <ClCompile Include="rda\function\Function.cpp">
+      <Filter>Файлы исходного кода\rda\function</Filter>
+    </ClCompile>
+    <ClCompile Include="rda\function\LeastSquares.cpp">
+      <Filter>Файлы исходного кода\rda\function</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -79,6 +103,27 @@
     </ClInclude>
     <ClInclude Include="rda\io\vizualization.h">
       <Filter>Заголовочные файлы\rda\io</Filter>
+    </ClInclude>
+    <ClInclude Include="rda\curve.h">
+      <Filter>Заголовочные файлы\rda</Filter>
+    </ClInclude>
+    <ClInclude Include="rda\function\ApproximateMethod.h">
+      <Filter>Заголовочные файлы\rda\function</Filter>
+    </ClInclude>
+    <ClInclude Include="rda\function\BisectionMethod.h">
+      <Filter>Заголовочные файлы\rda\function</Filter>
+    </ClInclude>
+    <ClInclude Include="rda\function\Derivative.h">
+      <Filter>Заголовочные файлы\rda\function</Filter>
+    </ClInclude>
+    <ClInclude Include="rda\function\EquationSolver.h">
+      <Filter>Заголовочные файлы\rda\function</Filter>
+    </ClInclude>
+    <ClInclude Include="rda\function\Function.h">
+      <Filter>Заголовочные файлы\rda\function</Filter>
+    </ClInclude>
+    <ClInclude Include="rda\function\LeastSquares.h">
+      <Filter>Заголовочные файлы\rda\function</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
