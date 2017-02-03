@@ -1,8 +1,8 @@
 
 #include <iostream>
+
 #include <rda\common.h>
 #include <rda\vector.h>
-
 #include <rda\io\vizualization.h>
 
 using namespace std;

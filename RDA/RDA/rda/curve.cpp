@@ -5,10 +5,12 @@
 
 #include <rda\curve.h>
 #include <rda\common.h>
+#include <rda\function\LeastSquares.h>
 
 
 using namespace std;
 using namespace rda;
+using namespace function;
 
 namespace {
 
@@ -163,6 +165,18 @@ namespace {
 		for(int i = 0; i < root->children.size(); i++){
 			delete root->children[i];
 		}
+	}
+
+
+	rda::Line extendLine(rda::ApproximiedCloudPart p1, rda::ApproximiedCloudPart p2){
+		rda::Line pl = rda::projectionLineToLine(p2.approx_line(), p1.approx_line());
+		return rda::maxDiagonal(p1.approx_line(), pl);	
+	}
+	
+	rda::Line mergeLines(rda::ApproximiedCloudPart l1, rda::ApproximiedCloudPart l2){
+		rda::CloudPtr cloud ( new rda::Cloud);
+		double overlapping = 0.0;
+		return rda::middleLine(l1, l2, &overlapping);	
 	}
 }
 
@@ -371,3 +385,182 @@ void rda::adaptiveRdp(rda::CloudPart cloud_part, int min_part_size, double min_e
 
 	destroySplitTree(parent);
 }
+
+void rda::distances(rda::CloudPtr cloud, std::vector<double>& dists)
+{
+	for(int i = 0; i < cloud->size()-1; i++){
+		dists.push_back(rda::distancePointToPoint(cloud->at(i), cloud->at(i+1)));		
+	}
+}
+
+void rda::monotonePartitioning(rda::CloudPtr cloud, double max_dist, int min_part_size, std::vector<rda::CloudPart>& parts)
+{	
+	std::vector<double> dists;
+	distances(cloud, dists);	
+
+	int start = 0;	
+
+	for(int i = 0; i < dists.size(); i++){
+
+		if( (max_dist < dists[i]) || i == (dists.size() - 1) ){
+
+			if(i - start >= min_part_size){
+				rda::CloudPart part(cloud, Range(start, i));	
+				parts.push_back(part);				
+			}
+			start = i + 1;
+		}
+	}	
+}
+
+void rda::naiveBreakpointDetector(rda::CloudPtr cloud, std::vector<int>& v_indexes, double max_diff, int min_points, std::vector<std::vector<int>>& indexes)
+{
+	std::vector<int> tmp;
+	
+	for(auto i = 0; i < v_indexes.size() - 1; i++){
+
+		tmp.push_back(v_indexes[i]);
+
+		if( std::abs( rda::distancePointToPoint(cloud->at(v_indexes[i]), cloud->at(v_indexes[i+1])) ) > max_diff ){
+			if( tmp.size() >= min_points)
+				indexes.push_back(tmp);	
+			tmp.clear();
+		}		
+	}
+
+	tmp.push_back(v_indexes.back());
+	if(tmp.size() >= min_points)
+		indexes.push_back(tmp);	
+}
+
+void rda::lineSegmentation(std::vector<rda::CloudPart>& parts, double threshold, std::vector<rda::CloudPart>& line_parts)
+{	
+	for(int i=0; i < parts.size(); i++){		
+		rda::rdpMinimization(parts[i], parts[i].range().start, parts[i].range().end, threshold, line_parts);
+	}
+}
+
+void rda::adaptiveLineSegmentation(std::vector<rda::CloudPart>& parts, int min_part_size, double min_error,std::vector<rda::CloudPart>& line_parts)
+{
+	for(int i=0; i < parts.size(); i++){		
+		rda::adaptiveRdp(parts[i], min_part_size, min_error, line_parts);
+	}
+}
+
+void rda::lsLineApproximation(std::vector<rda::CloudPart>& parts, std::vector<rda::ApproximiedCloudPart>& line_approx)
+{
+	for(int i = 0; i < parts.size(); i++){
+
+		rda::Line corr_line(parts[i].first_point(), parts[i].last_point());
+		rda::Vector oX(1, 0);
+		
+		double angle = rda::Vector::angle(corr_line.directionVector(), oX) * rda::pi / 180.0;
+
+		if(corr_line.k() > 0)
+			angle *= -1;
+
+		rda::CloudPtr rotated_cloud (new rda::Cloud);
+		rda::rotateCloud(parts[i].cloud(), parts[i].range().start, parts[i].range().end, -angle , rotated_cloud);		
+
+		LeastSquares ls(1);
+		ls.init(rotated_cloud, 0, rotated_cloud->points.size() - 1);
+		ls.approximate();
+
+		rda::CloudPtr appr_line_cloud (new rda::Cloud);
+		appr_line_cloud->push_back(rda::Point(rotated_cloud->at(0).x, ls.value(rotated_cloud->at(0).x), rotated_cloud->at(0).z)); 
+		appr_line_cloud->push_back(rda::Point(rotated_cloud->back().x, 
+											  ls.value(rotated_cloud->back().x), 
+											  rotated_cloud->back().z));
+
+		rda::CloudPtr unrotated_cloud (new rda::Cloud);
+		rda::rotateCloud(appr_line_cloud,  angle, unrotated_cloud);
+
+		rda::Line line(unrotated_cloud->front(), unrotated_cloud->back());
+		//rda::Line line(appr_line_cloud->front(), appr_line_cloud->back());
+
+		line_approx.push_back(rda::ApproximiedCloudPart(parts[i], line));
+	}
+}
+
+rda::Line rda::lsLineApproximation(rda::CloudPart& part){
+
+	rda::Line corr_line(part.first_point(), part.last_point());
+	rda::Vector oX(1, 0);
+	
+	double angle = rda::Vector::angle(corr_line.directionVector(), oX) * pi / 180.0;
+	
+	if(corr_line.k() > 0)
+		angle *= -1;
+	
+	rda::CloudPtr rotated_cloud (new rda::Cloud);
+	rda::rotateCloud(part.cloud(), part.range().start, part.range().end, -angle , rotated_cloud);		
+	
+	LeastSquares ls(1);
+	ls.init(rotated_cloud, 0, rotated_cloud->points.size() - 1);
+	ls.approximate();
+	
+	rda::CloudPtr appr_line_cloud (new rda::Cloud);
+	appr_line_cloud->push_back(rda::Point(rotated_cloud->at(0).x, ls.value(rotated_cloud->at(0).x), rotated_cloud->at(0).z)); 
+	appr_line_cloud->push_back(rda::Point(rotated_cloud->back().x, 
+										  ls.value(rotated_cloud->back().x), 
+										  rotated_cloud->back().z));
+	
+	rda::CloudPtr unrotated_cloud (new rda::Cloud);
+	rda::rotateCloud(appr_line_cloud,  angle, unrotated_cloud);
+	
+	rda::Line line(unrotated_cloud->front(), unrotated_cloud->back());	
+	
+	return line;
+}
+
+// copy of vector
+void rda::segmentsMerging(std::vector<rda::ApproximiedCloudPart> segments, double dist_threashold, double angle_threashold, std::vector<rda::ApproximiedCloudPart>& merged_segments){
+
+	if(segments.size() < 1) 
+		return;
+
+	for(std::size_t i = 0; i < segments.size(); i++ ){
+
+		for(std::size_t j = 0; j < segments.size(); j++){
+
+			if(i != j){
+				if(rda::areSimilar(segments[i].approx_line(), segments[j].approx_line(), dist_threashold, angle_threashold)){
+					double d = segments[j].approx_line().length() / segments[i].approx_line().length();					
+					double m = segments[j].size() / (double)segments[i].size();
+					if(m <= 1.0){ // j length is smaller than i length
+						double overlapping = 0.0;
+						Line mid_line = rda::middleLine(segments[i], segments[j], &overlapping);
+						if( overlapping/mid_line.length() > 0.3) {							
+							if(m > 0.25){
+								segments[i].set_approx_line(mid_line); //merge
+							}
+							else{
+								segments[i].set_approx_line(extendLine(segments[i], segments[j])); //merge
+							}
+						}
+						else{
+							segments[i].set_approx_line(extendLine(segments[i], segments[j])); //merge						
+						}
+
+						segments.erase(segments.begin() + j );
+						if(j < i)
+							i--;
+						j--;
+					}
+				}
+			}
+		}
+	}
+
+	for(std::size_t i = 0; i < segments.size(); i++)
+		merged_segments.push_back(segments[i]);
+}
+
+bool rda::areSimilar(Line& line_1, Line& line_2, double dist_threashold, double angle_threashold){
+	if( (rda::distanceSegmentToSegment(line_1, line_2) <= dist_threashold ) &&
+		( rda::Vector::angle(line_1.directionVector(), line_2.directionVector()) <= angle_threashold) )
+		return true;	
+	return false;
+}
+
+

@@ -75,6 +75,12 @@
     <ClCompile Include="rda\function\LeastSquares.cpp">
       <Filter>Файлы исходного кода\rda\function</Filter>
     </ClCompile>
+    <ClCompile Include="rda\rangefinder.cpp">
+      <Filter>Файлы исходного кода\rda</Filter>
+    </ClCompile>
+    <ClCompile Include="rda\filtering.cpp">
+      <Filter>Файлы исходного кода\rda</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rda\common.h">
@@ -124,6 +130,12 @@
     </ClInclude>
     <ClInclude Include="rda\function\LeastSquares.h">
       <Filter>Заголовочные файлы\rda\function</Filter>
+    </ClInclude>
+    <ClInclude Include="rda\rangefinder.h">
+      <Filter>Заголовочные файлы\rda</Filter>
+    </ClInclude>
+    <ClInclude Include="rda\filtering.h">
+      <Filter>Заголовочные файлы\rda</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

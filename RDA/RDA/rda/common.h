@@ -13,6 +13,8 @@ namespace rda {
 
 	const double pi  = 3.1415926535897;
 
+	enum  SensorNum { LeftSensor = 1, FrontSensor = 2, RightSensor = 3};
+
 	typedef pcl::PointXYZ Point;
 
 	typedef pcl::PointCloud<pcl::PointXYZ> Cloud;

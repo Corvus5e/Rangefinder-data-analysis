@@ -38,7 +38,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(PCL_ROOT)\include\pcl-1.6;$(ProjectDir);$(EIGEN_ROOT)\include;$(BOOST_ROOT)\include;$(GLUT_ROOT)\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(PCL_ROOT)\include\pcl-1.6;$(ProjectDir);$(EIGEN_ROOT)\include;$(BOOST_ROOT)\include;$(GLUT_ROOT)\include;$(FLANN_ROOT)\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(PCL_ROOT)\lib;$(GLUT_ROOT)\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -48,6 +48,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>pcl_common_debug.lib;pcl_filters_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -69,6 +70,7 @@
     <ClCompile Include="rda\cloud_part.cpp" />
     <ClCompile Include="rda\common.cpp" />
     <ClCompile Include="rda\curve.cpp" />
+    <ClCompile Include="rda\filtering.cpp" />
     <ClCompile Include="rda\function\ApproximateMethod.cpp" />
     <ClCompile Include="rda\function\BisectionMethod.cpp" />
     <ClCompile Include="rda\function\Derivative.cpp" />
@@ -78,12 +80,14 @@
     <ClCompile Include="rda\io\io.cpp" />
     <ClCompile Include="rda\io\vizualization.cpp" />
     <ClCompile Include="rda\line.cpp" />
+    <ClCompile Include="rda\rangefinder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rda\approximied_cloud_part.h" />
     <ClInclude Include="rda\cloud_part.h" />
     <ClInclude Include="rda\common.h" />
     <ClInclude Include="rda\curve.h" />
+    <ClInclude Include="rda\filtering.h" />
     <ClInclude Include="rda\function\ApproximateMethod.h" />
     <ClInclude Include="rda\function\BisectionMethod.h" />
     <ClInclude Include="rda\function\Derivative.h" />
@@ -94,6 +98,7 @@
     <ClInclude Include="rda\io\io.h" />
     <ClInclude Include="rda\io\vizualization.h" />
     <ClInclude Include="rda\line.h" />
+    <ClInclude Include="rda\rangefinder.h" />
     <ClInclude Include="rda\rda_exception.h" />
     <ClInclude Include="rda\vector.h" />
   </ItemGroup>

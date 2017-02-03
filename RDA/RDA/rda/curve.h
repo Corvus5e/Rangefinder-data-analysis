@@ -38,6 +38,25 @@ namespace rda {
 
 	rda::Line maxDiagonal(rda::Line& line_1, rda::Line& line_2);
 
+	//Finds distances from i to i+1 point 
+	void distances(rda::CloudPtr cloud, std::vector<double>& dists);
+
+	void monotonePartitioning(rda::CloudPtr cloud, double max_dist, int min_part_size, std::vector<rda::CloudPart>& parts);
+
+	void naiveBreakpointDetector(rda::CloudPtr cloud, std::vector<int>& v_indexes, double max_diff, int min_points, std::vector<std::vector<int>>& indexes);
+
+	void lineSegmentation(std::vector<rda::CloudPart>& parts, double threshold, std::vector<rda::CloudPart>& line_parts);	
+
+	void adaptiveLineSegmentation(std::vector<rda::CloudPart>& parts, int min_part_size, double min_error, std::vector<rda::CloudPart>& line_parts);
+
+	//Least Squares Line Approximation
+	void lsLineApproximation(std::vector<rda::CloudPart>& parts, std::vector<rda::ApproximiedCloudPart>& line_approx);
+
+	rda::Line lsLineApproximation(rda::CloudPart& part);
+
+	void segmentsMerging(std::vector<rda::ApproximiedCloudPart> segments, double dist_threashold, double angle_threashold, std::vector<rda::ApproximiedCloudPart>& merged_segments);
+
+	bool areSimilar(Line& line_1, Line& line_2, double dist_threashold, double angle_threashold);	
 }
 
 #endif
