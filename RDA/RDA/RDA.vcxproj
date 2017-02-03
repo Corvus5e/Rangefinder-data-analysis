@@ -101,6 +101,8 @@
     <ClInclude Include="rda\rangefinder.h" />
     <ClInclude Include="rda\rda_exception.h" />
     <ClInclude Include="rda\vector.h" />
+    <ClInclude Include="scenario\ASM_2F.hpp" />
+    <ClInclude Include="scenario\Scenario.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

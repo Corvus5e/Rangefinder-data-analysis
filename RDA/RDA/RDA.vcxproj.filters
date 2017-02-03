@@ -31,6 +31,9 @@
     <Filter Include="Файлы исходного кода\rda\function">
       <UniqueIdentifier>{0c1a56e4-e8b9-42cc-8b2c-13a25379d0ce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Заголовочные файлы\scenario">
+      <UniqueIdentifier>{4bdd1882-f862-46e5-ad65-b63005683b84}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -136,6 +139,12 @@
     </ClInclude>
     <ClInclude Include="rda\filtering.h">
       <Filter>Заголовочные файлы\rda</Filter>
+    </ClInclude>
+    <ClInclude Include="scenario\ASM_2F.hpp">
+      <Filter>Заголовочные файлы\scenario</Filter>
+    </ClInclude>
+    <ClInclude Include="scenario\Scenario.h">
+      <Filter>Заголовочные файлы\scenario</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
