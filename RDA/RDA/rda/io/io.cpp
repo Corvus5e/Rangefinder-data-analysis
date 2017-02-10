@@ -45,7 +45,7 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr rda::readScene(std::string file, std::vector
 
 	int lineNumber = 0;
 	int readFromLineNum = 0;
-	int size = 2; //+ 1;		// количество считываемых элементов
+	int size = 3; //+ 1;		// количество считываемых элементов
 	int offset = 4; // сдвиг относительно 0-ого
 	//std::vector<double> points;
 
@@ -86,7 +86,7 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr rda::readScene(std::string file, std::vector
 
 			if(isPoint){
 				cloud->push_back(pcl::PointXYZ(data[0], data[1], 0.0));
-				//distances.push_back(data[2]);
+				distances.push_back(data[2]);
 			}
 		}
 

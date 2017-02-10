@@ -84,6 +84,12 @@
     <ClCompile Include="rda\filtering.cpp">
       <Filter>Файлы исходного кода\rda</Filter>
     </ClCompile>
+    <ClCompile Include="rda\segmentation.cpp">
+      <Filter>Файлы исходного кода\rda</Filter>
+    </ClCompile>
+    <ClCompile Include="rda\line_extraction.cpp">
+      <Filter>Файлы исходного кода\rda</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rda\common.h">
@@ -144,6 +150,18 @@
       <Filter>Заголовочные файлы\scenario</Filter>
     </ClInclude>
     <ClInclude Include="scenario\Scenario.h">
+      <Filter>Заголовочные файлы\scenario</Filter>
+    </ClInclude>
+    <ClInclude Include="rda\segmentation.h">
+      <Filter>Заголовочные файлы\rda</Filter>
+    </ClInclude>
+    <ClInclude Include="rda\line_extraction.h">
+      <Filter>Заголовочные файлы\rda</Filter>
+    </ClInclude>
+    <ClInclude Include="scenario\CASM.hpp">
+      <Filter>Заголовочные файлы\scenario</Filter>
+    </ClInclude>
+    <ClInclude Include="scenario\Test.hpp">
       <Filter>Заголовочные файлы\scenario</Filter>
     </ClInclude>
   </ItemGroup>

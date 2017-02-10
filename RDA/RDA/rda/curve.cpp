@@ -102,8 +102,8 @@ namespace {
 			//parent->error = deviation;
 			//endnew
 			parent->error = maxDistanceFromLine(c.cloud(), parent->range.start, parent->range.end, index);
-			if(parent->error < min_error)
-				parent->error = min_error;
+			if(parent->error < 4)
+				parent->error = 4;
 			parent->length = rda::CloudPart(c.cloud(), parent->range).line().length();
 			parent->score =   parent->length  / (parent->error);						
 	
@@ -166,7 +166,6 @@ namespace {
 			delete root->children[i];
 		}
 	}
-
 
 	rda::Line extendLine(rda::ApproximiedCloudPart p1, rda::ApproximiedCloudPart p2){
 		rda::Line pl = rda::projectionLineToLine(p2.approx_line(), p1.approx_line());
@@ -405,12 +404,14 @@ void rda::monotonePartitioning(rda::CloudPtr cloud, double max_dist, int min_par
 		if( (max_dist < dists[i]) || i == (dists.size() - 1) ){
 
 			if(i - start >= min_part_size){
-				rda::CloudPart part(cloud, Range(start, i));	
-				parts.push_back(part);				
+				if(i == (dists.size() - 1))
+					parts.push_back(rda::CloudPart(cloud, Range(start, i+1)));	
+				else
+					parts.push_back(rda::CloudPart(cloud, Range(start, i)));					
 			}
 			start = i + 1;
 		}
-	}	
+	}
 }
 
 void rda::naiveBreakpointDetector(rda::CloudPtr cloud, std::vector<int>& v_indexes, double max_diff, int min_points, std::vector<std::vector<int>>& indexes)

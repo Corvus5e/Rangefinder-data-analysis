@@ -11,21 +11,21 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{4E39464A-1C9C-49A4-BA99-3CD82F6BA18A}</ProjectGuid>
-    <RootNamespace>RDA</RootNamespace>
+    <ProjectGuid>{F44ED676-F04F-479F-9A66-E2736CF26ED3}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>RDAL</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <CharacterSet>MultiByte</CharacterSet>
-    <PlatformToolset>v100</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -38,15 +38,23 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(PCL_ROOT)\include\pcl-1.6;$(ProjectDir);$(EIGEN_ROOT)\include;$(BOOST_ROOT)\include;$(GLUT_ROOT)\include;$(FLANN_ROOT)\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(PCL_ROOT)\lib;$(GLUT_ROOT)\lib;$(LibraryPath)</LibraryPath>
+    <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(PCL_ROOT)\include\pcl-1.6;$(EIGEN_ROOT)\include;$(BOOST_ROOT)\include;$(FLANN_ROOT)\include;$(SolutionDir)\RDA;$(IncludePath)</IncludePath>
+    <LibraryPath>$(PCL_ROOT)\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;RDAL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>pcl_common_debug.lib;pcl_filters_debug.lib;pcl_segmentation_debug.lib;pcl_kdtree_debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
@@ -54,61 +62,54 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;RDAL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="rda\approximied_cloud_part.cpp" />
-    <ClCompile Include="rda\cloud_part.cpp" />
-    <ClCompile Include="rda\common.cpp" />
-    <ClCompile Include="rda\curve.cpp" />
-    <ClCompile Include="rda\filtering.cpp" />
-    <ClCompile Include="rda\function\ApproximateMethod.cpp" />
-    <ClCompile Include="rda\function\BisectionMethod.cpp" />
-    <ClCompile Include="rda\function\Derivative.cpp" />
-    <ClCompile Include="rda\function\Function.cpp" />
-    <ClCompile Include="rda\function\LeastSquares.cpp" />
-    <ClCompile Include="rda\io\console.cpp" />
-    <ClCompile Include="rda\io\io.cpp" />
-    <ClCompile Include="rda\io\vizualization.cpp" />
-    <ClCompile Include="rda\line.cpp" />
-    <ClCompile Include="rda\line_extraction.cpp" />
-    <ClCompile Include="rda\rangefinder.cpp" />
-    <ClCompile Include="rda\segmentation.cpp" />
+    <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="rda\approximied_cloud_part.h" />
-    <ClInclude Include="rda\cloud_part.h" />
-    <ClInclude Include="rda\common.h" />
-    <ClInclude Include="rda\curve.h" />
-    <ClInclude Include="rda\filtering.h" />
-    <ClInclude Include="rda\function\ApproximateMethod.h" />
-    <ClInclude Include="rda\function\BisectionMethod.h" />
-    <ClInclude Include="rda\function\Derivative.h" />
-    <ClInclude Include="rda\function\EquationSolver.h" />
-    <ClInclude Include="rda\function\Function.h" />
-    <ClInclude Include="rda\function\LeastSquares.h" />
-    <ClInclude Include="rda\io\console.h" />
-    <ClInclude Include="rda\io\io.h" />
-    <ClInclude Include="rda\io\vizualization.h" />
-    <ClInclude Include="rda\line.h" />
-    <ClInclude Include="rda\line_extraction.h" />
-    <ClInclude Include="rda\rangefinder.h" />
-    <ClInclude Include="rda\rda_exception.h" />
-    <ClInclude Include="rda\segmentation.h" />
-    <ClInclude Include="rda\vector.h" />
-    <ClInclude Include="scenario\CASM.hpp" />
-    <ClInclude Include="scenario\ASM_2F.hpp" />
-    <ClInclude Include="scenario\Scenario.h" />
-    <ClInclude Include="scenario\Test.hpp" />
+    <ClInclude Include="RDAL.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\RDA\rda\approximied_cloud_part.cpp" />
+    <ClCompile Include="..\RDA\rda\cloud_part.cpp" />
+    <ClCompile Include="..\RDA\rda\common.cpp" />
+    <ClCompile Include="..\RDA\rda\curve.cpp" />
+    <ClCompile Include="..\RDA\rda\filtering.cpp" />
+    <ClCompile Include="..\RDA\rda\function\ApproximateMethod.cpp" />
+    <ClCompile Include="..\RDA\rda\function\BisectionMethod.cpp" />
+    <ClCompile Include="..\RDA\rda\function\Derivative.cpp" />
+    <ClCompile Include="..\RDA\rda\function\Function.cpp" />
+    <ClCompile Include="..\RDA\rda\function\LeastSquares.cpp" />
+    <ClCompile Include="..\RDA\rda\line.cpp" />
+    <ClCompile Include="..\RDA\rda\rangefinder.cpp" />
+    <ClCompile Include="..\RDA\rda\segmentation.cpp" />
+    <ClCompile Include="dllmain.cpp">
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+      <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsManaged>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="RDAL.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
