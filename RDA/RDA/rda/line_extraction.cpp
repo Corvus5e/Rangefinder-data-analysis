@@ -21,9 +21,13 @@ void rda::casmExtractor(rda::CloudPtr cloud,
 {
 	rda::CloudPtr cloud_filtered (new rda::Cloud);
 
-	std::vector<int> filtered_dists_indexes;
 	if(filter_kn > distances.size())
 		filter_kn = distances.size();
+
+	if(min_rdp_eps < 4)
+		min_rdp_eps = 4;
+
+	std::vector<int> filtered_dists_indexes;	
 	rda::statisticalDistanceFilter(distances, filter_kn, filter_threshold, filtered_dists_indexes); 					
 
 	for(int i = 0; i < filtered_dists_indexes.size(); i++){				
