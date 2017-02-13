@@ -76,9 +76,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="RDAL.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -95,6 +92,7 @@
     <ClCompile Include="..\RDA\rda\function\Function.cpp" />
     <ClCompile Include="..\RDA\rda\function\LeastSquares.cpp" />
     <ClCompile Include="..\RDA\rda\line.cpp" />
+    <ClCompile Include="..\RDA\rda\line_extraction.cpp" />
     <ClCompile Include="..\RDA\rda\rangefinder.cpp" />
     <ClCompile Include="..\RDA\rda\segmentation.cpp" />
     <ClCompile Include="dllmain.cpp">

@@ -1,7 +1,3 @@
-// RDAL.cpp: определяет экспортированные функции для приложения DLL.
-//
-
-#include "stdafx.h"
 
 #include <rda\common.h>
 #include <rda\line.h>
@@ -172,9 +168,7 @@ void casmExtractor(double* input, double clustering_eps, int clustering_minPts, 
 						min_rdp_eps, min_part_size, merge_dist,
 						merge_angle, filter_kN, filter_treshold,merged_lines); 
 
-	convertApproxCloudPartsToFormatArray(merged_lines, output, clusters_size);
-
-	clusters_size = 49;
+	convertApproxCloudPartsToFormatArray(merged_lines, output, clusters_size);	
 }
 
 int pointSize(){
