@@ -10,7 +10,7 @@
 
 #include <rda\line_extraction.h>
 
-class Test : public Scanario {
+class CASM_Test : public Scanario {
 public:
 	void start(int argc, char* argv[]){
 

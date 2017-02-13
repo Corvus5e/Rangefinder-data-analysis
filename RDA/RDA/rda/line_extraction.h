@@ -7,7 +7,7 @@
 
 
 namespace rda {
-
+	
 	/*
 	 * Clustering Adaptive Split and Merge
 	 * 
@@ -17,6 +17,7 @@ namespace rda {
 	 * 4. Adaptive split and merge
 	 * 5. Least Squares
 	 * 6. Merging segmants
+	 *
 	*/
 
 	void casmExtractor(rda::CloudPtr cloud,
@@ -30,6 +31,30 @@ namespace rda {
 						double merge_angle,		  // 20
 						int filter_kn,			  // 5
 						double filter_threshold,  // 0.9
+						std::vector<std::vector<rda::ApproximiedCloudPart>>& line_clusters);
+	
+	/*
+	 * 
+	 * Adaptive Split and Merge with new 2 filters (statistacil and reduce median filter)
+	 * 
+	 * 1. Split by 3 n/a
+	 * 2. Split by Naive breakpoint detector in 2d (cont dists in 2d then split - find out indexes)
+	 * 3. Filtration by Statistacal filter
+	 * 2. Filtration by Reduce median filter
+	 * 4. Adaptive Rumer
+	 * 5. Least Squares Approximation
+	 *
+	 */
+
+	void basmExtractor(rda::CloudPtr cloud,
+						std::vector<double>& distances,
+						int statistical_kn, // 
+						double statistical_threashold,
+						int min_segm_points,
+						double max_dist_diff, 
+						int rmed_window_size, 
+						int min_rdp_eps, 
+						int min_rdp_size,
 						std::vector<std::vector<rda::ApproximiedCloudPart>>& line_clusters);
 }
 

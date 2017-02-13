@@ -14,6 +14,7 @@
  * 5. Least Squares Approximation
  *
  */
+
 #include <time.h>
 
 #include <rda\common.h>
@@ -28,7 +29,7 @@
 
 #include <scenario\Scenario.h>
 
-class ASM_2F : public Scanario {
+class BASM : public Scanario {
 
 public: 
 
@@ -47,14 +48,20 @@ public:
 			int sensor_id = 0;
 			rda::readScene(console.getParam("-file"), distances, rob_points, part_ranges, sensor_id);	
 	
+			int statistacal_kN = atof(console.getParam("-statistacal_kN").c_str());
+			double statistacal_threashold = atof(console.getParam("-statistacal_threashold").c_str());
+			int min_segm_points = atof(console.getParam("-min_segm_points").c_str());
+			double max_dist_diff = atof(console.getParam("-max_dist_diff").c_str());
+			int reduce_median_window = atof(console.getParam("-reduce_median_window").c_str());
+			double min_rdp_eps = atof(console.getParam("-min_rdp_eps").c_str());
+			int min_rdp_size = atof(console.getParam("-min_rdp_size").c_str());
+
 			clock_t partitioning_clock;
 			partitioning_clock = clock();
 	
 			rda::computePointCloud(rob_points, distances, raw_cloud, sensor_id);
 	
 			//statistical filter
-			int statistacal_kN = atof(console.getParam("-statistacal_kN").c_str());
-			double statistacal_threashold = atof(console.getParam("-statistacal_threashold").c_str());
 			std::vector<std::vector<int>> stat_filtered_indexes(part_ranges.size());		
 			for(auto i = 0; i < part_ranges.size(); i++){			
 				rda::statisticalDistanceFilter(distances, part_ranges[i], statistacal_kN, statistacal_threashold, stat_filtered_indexes[i]);			
@@ -62,8 +69,6 @@ public:
 	
 	
 			// naive breakponit detector
-			int min_segm_points = atof(console.getParam("-min_segm_points").c_str());
-			double max_dist_diff = atof(console.getParam("-max_dist_diff").c_str());
 			std::vector<std::vector<int>> break_indexes;
 			for(auto i = 0; i < stat_filtered_indexes.size(); i++){
 				//rda::naive_beakpoint_detector(distances, stat_filtered_indexes[i], max_dist_diff, min_segm_points, break_indexes);  			
@@ -71,7 +76,6 @@ public:
 			}
 	
 			// reduce median filter	
-			int reduce_median_window = atof(console.getParam("-reduce_median_window").c_str());
 			std::vector<std::vector<int>> reduce_median_indexes(break_indexes.size());		
 			for(auto i = 0; i < break_indexes.size(); i++){
 				if(break_indexes[i].size() < reduce_median_window){
@@ -86,9 +90,6 @@ public:
 			}
 	
 			// Adaptive Split&Merge
-			double min_rdp_eps = atof(console.getParam("-min_rdp_eps").c_str());
-			int min_rdp_size = atof(console.getParam("-min_rdp_size").c_str());
-	
 			std::vector<std::vector<rda::CloudPart>> min_cloud_parts;
 			for(auto it = reduce_median_clouds.begin(); it != reduce_median_clouds.end(); ++it){
 				std::vector<rda::CloudPart> min_parts;

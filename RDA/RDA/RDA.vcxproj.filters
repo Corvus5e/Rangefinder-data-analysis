@@ -146,9 +146,6 @@
     <ClInclude Include="rda\filtering.h">
       <Filter>Заголовочные файлы\rda</Filter>
     </ClInclude>
-    <ClInclude Include="scenario\ASM_2F.hpp">
-      <Filter>Заголовочные файлы\scenario</Filter>
-    </ClInclude>
     <ClInclude Include="scenario\Scenario.h">
       <Filter>Заголовочные файлы\scenario</Filter>
     </ClInclude>
@@ -161,7 +158,10 @@
     <ClInclude Include="scenario\CASM.hpp">
       <Filter>Заголовочные файлы\scenario</Filter>
     </ClInclude>
-    <ClInclude Include="scenario\Test.hpp">
+    <ClInclude Include="scenario\BASM.hpp">
+      <Filter>Заголовочные файлы\scenario</Filter>
+    </ClInclude>
+    <ClInclude Include="scenario\CASM_Test.hpp">
       <Filter>Заголовочные файлы\scenario</Filter>
     </ClInclude>
   </ItemGroup>
