@@ -98,6 +98,70 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr rda::readScene(std::string file, std::vector
 	return cloud;
 }
 
+pcl::PointCloud<pcl::PointXYZ>::Ptr rda::readScene(std::string file, std::vector<double>& distances, std::vector<rda::Range>& part_ranges)
+{
+	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud( new pcl::PointCloud<pcl::PointXYZ> );
+	std::fstream f;
+	f.open(file, std::ios::in);
+	if(!f.is_open())
+		throw rda::RdaException("Failed to read file " + file);
+	
+	int line_number = 0;
+	int read_from_line_num = 1;		
+
+	std::string buf;
+	getline(f, buf);
+	std::vector<std::string> title_names;
+	split(buf, " ", title_names);
+
+	if (strcmp(title_names[2].c_str(), "0.") == 0){
+		read_from_line_num = 1;
+	}
+	if (strcmp(title_names[2].c_str(), "1.") == 0){
+		read_from_line_num = 16;
+	}
+	if (strcmp(title_names[2].c_str(), "2.") == 0){
+		read_from_line_num = 27;		
+	}
+
+	int no_data = 0;
+	int start_index = 0;
+	bool closed_part = true;
+	while(!f.eof()){
+		if(line_number >= read_from_line_num){
+			std::vector<std::string> slices;
+			split(buf, " ", slices);
+
+			if(slices.back().at(0) != 'n'){
+				if(closed_part){
+					start_index = distances.size();
+					closed_part = false;
+				}
+				rda::Point point(atof(slices[4].c_str()), atof(slices[5].c_str()), 0.0f);
+				cloud->push_back(point);
+				distances.push_back(atof(slices.back().c_str()));
+				no_data = 0;
+			}
+			else{
+				if(++no_data == 3){
+					if(!closed_part){
+						part_ranges.push_back(rda::Range(start_index, distances.size() - 1));
+						closed_part = true;
+					}
+				}
+			}
+		}
+
+
+		getline(f, buf);
+		line_number++;
+	}
+	if(!closed_part)
+		part_ranges.push_back(rda::Range(start_index, distances.size() - 1));
+
+	return cloud;
+}
+
 void rda::readScene(std::string file, std::vector<double>& distances, std::vector<rda::RPoint>& rob_points, int& sensor){
 	
 	//setlocale(LC_ALL, "RUS");

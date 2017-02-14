@@ -14,6 +14,8 @@ namespace rda {
 		
 	pcl::PointCloud<pcl::PointXYZ>::Ptr readScene(std::string file, std::vector<double>& distances);
 
+	pcl::PointCloud<pcl::PointXYZ>::Ptr readScene(std::string file, std::vector<double>& distances, std::vector<rda::Range>& part_ranges);
+
 	void readScene(std::string file, std::vector<double>& distances, std::vector<rda::RPoint>& rob_points, int& sensor);
 
 	void readScene(std::string file, std::vector<double>& distances, std::vector<rda::RPoint>& rob_points, std::vector<rda::Range>& parts, int& sensor);

@@ -12,8 +12,8 @@
 
 class CASM_Test : public Scanario {
 public:
-	void start(int argc, char* argv[]){
-
+	void start(int argc, char* argv[])
+	{
 		rda::Console console;
 		console.readArgs(argc, argv);	
 

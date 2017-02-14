@@ -48,6 +48,7 @@ namespace rda {
 
 	void basmExtractor(rda::CloudPtr cloud,
 						std::vector<double>& distances,
+						std::vector<rda::Range>& part_ranges,
 						int statistical_kn, // 
 						double statistical_threashold,
 						int min_segm_points,

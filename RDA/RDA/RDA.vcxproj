@@ -105,6 +105,7 @@
     <ClInclude Include="rda\rda_exception.h" />
     <ClInclude Include="rda\segmentation.h" />
     <ClInclude Include="rda\vector.h" />
+    <ClInclude Include="scenario\BASM_Test.hpp" />
     <ClInclude Include="scenario\CASM.hpp" />
     <ClInclude Include="scenario\BASM.hpp" />
     <ClInclude Include="scenario\Scenario.h" />
