@@ -201,10 +201,10 @@ public:
 	
 	
 			for(auto i = 0; i < sf_dists_clouds.size(); i++){
-				//v_7.addCloud(sf_dists_clouds[i], rda::LINE_STRIP, 0.0f, 0.0f, 0.0f, 1.0f);			
+				v_7.addCloud(sf_dists_clouds[i], rda::LINE_STRIP, 0.0f, 0.0f, 0.0f, 1.0f);			
 				v_7.addCloud(sf_dists_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 0.0f, 1.0f);			
-				//v_8.addCloud(sf_dists_clouds[i], rda::LINE_STRIP, 0.0f, 0.0f, 0.0f, 1.0f);
-				//v.addCloud(sf_dists_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 0.0f, 1.0f);	
+				v_8.addCloud(sf_dists_clouds[i], rda::LINE_STRIP, 0.0f, 0.0f, 0.0f, 1.0f);
+				v.addCloud(sf_dists_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 0.0f, 1.0f);	
 			}
 	
 			// dists sum test
@@ -214,8 +214,8 @@ public:
 			//v.addCloud(sum_dist_std_cloud, rda::LINES, 0.0f, 0.0f, 1.0f, 1.0f);
 			
 			v_1.addCloud(raw_cloud, rda::CIRCLES, 0.0f, 0.0f, 0.0f, 1.0f);
-			//v_2.addCloud(raw_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 0.0f, 1.0f);
-			//v_4.addCloud(raw_cloud, rda::CIRCLES, 0.0f, 0.0f, 0.0f, 1.0f);
+			v_2.addCloud(raw_cloud, rda::CIRCLES, 0.0f, 0.0f, 0.0f, 1.0f);
+			v_4.addCloud(raw_cloud, rda::CIRCLES, 0.0f, 0.0f, 0.0f, 1.0f);
 			
 			
 			for(auto i = 0; i < sf_clouds.size(); i++){
@@ -225,7 +225,7 @@ public:
 			
 			for(auto i = 0; i < filtered_dists_clouds.size(); i++){
 				v_8.addCloud(filtered_dists_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 0.0f, 1.0f);
-				//v_8.addCloud(filtered_dists_clouds[i], rda::LINE_STRIP, 1.0f, 0.0f, 0.0f, 1.0f);			
+				v_8.addCloud(filtered_dists_clouds[i], rda::LINE_STRIP, 1.0f, 0.0f, 0.0f, 1.0f);			
 			}
 	
 			for(auto i = 0; i < reduce_median_clouds.size(); i++){
@@ -242,7 +242,7 @@ public:
 				v_5.addCloud(break_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 0.0f, 1.0f);
 			}
 	
-			//v_5.addClouds(break_clouds, rda::CIRCLES, 1.0f);
+			v_5.addClouds(break_clouds, rda::CIRCLES, 1.0f);
 	
 			v_6.addCloud(raw_cloud, rda::CIRCLES, 0.0f, 0.0f, 0.0f, 0.1f);
 			for(auto i = 0; i < ls_lines.size(); i++){			

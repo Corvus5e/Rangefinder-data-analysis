@@ -155,7 +155,7 @@ void convertApproxCloudPartsToFormatArray(std::vector<std::vector<rda::Approximi
 
  /*  ------- RDAL.h implementation ------- */
 
-void casmExtractor(double* input, double clustering_eps, int clustering_minPts, double min_rdp_eps, double max_dist, int min_part_size, double merge_dist, double merge_angle, int filter_kN, double filter_treshold, double**& output, int& clusters_size){
+void extractLines(double* input, double clustering_eps, int clustering_minPts, double min_rdp_eps, double max_dist, int min_part_size, double merge_dist, double merge_angle, int filter_kN, double filter_treshold, double**& output, int& clusters_size){
 	
 	rda::CloudPtr cloud(new rda::Cloud);
 	std::vector<double> distances;

@@ -10,9 +10,8 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {	
-	//ASM_2F a;
 	//CASM a;
 	//CASM_Test a;
-	BASM_Test a;
+	BASM a;
 	a.start(argc, argv);
 }

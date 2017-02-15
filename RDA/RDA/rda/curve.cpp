@@ -102,8 +102,8 @@ namespace {
 			//parent->error = deviation;
 			//endnew
 			parent->error = maxDistanceFromLine(c.cloud(), parent->range.start, parent->range.end, index);
-			if(parent->error < 4)
-				parent->error = 4;
+			if(parent->error < 10)
+				parent->error = 10;
 			parent->length = rda::CloudPart(c.cloud(), parent->range).line().length();
 			parent->score =   parent->length  / (parent->error);						
 	
@@ -563,5 +563,3 @@ bool rda::areSimilar(Line& line_1, Line& line_2, double dist_threashold, double 
 		return true;	
 	return false;
 }
-
-

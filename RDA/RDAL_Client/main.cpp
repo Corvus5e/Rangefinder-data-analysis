@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
 		clock_t amount_clock;
 		amount_clock = clock();
 		
-		casmExtractor(&data[0], clustering_eps, clustering_minPts, min_rdp_eps, max_dist, min_part_size, merge_dist, merge_angle, filter_kN, filter_threshold, output, clusters_number);
+		extractLines(&data[0], clustering_eps, clustering_minPts, min_rdp_eps, max_dist, min_part_size, merge_dist, merge_angle, filter_kN, filter_threshold, output, clusters_number);
 		
 		amount_time = ((float)(clock() - amount_clock)) / CLOCKS_PER_SEC;
 		std::cout << "Amount time :" << amount_time  << "sec" << std::endl;
