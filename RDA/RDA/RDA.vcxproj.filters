@@ -167,5 +167,8 @@
     <ClInclude Include="scenario\BASM_Test.hpp">
       <Filter>Заголовочные файлы\scenario</Filter>
     </ClInclude>
+    <ClInclude Include="scenario\Test.hpp">
+      <Filter>Заголовочные файлы\scenario</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

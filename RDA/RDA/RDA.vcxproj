@@ -110,6 +110,7 @@
     <ClInclude Include="scenario\BASM.hpp" />
     <ClInclude Include="scenario\Scenario.h" />
     <ClInclude Include="scenario\CASM_Test.hpp" />
+    <ClInclude Include="scenario\Test.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

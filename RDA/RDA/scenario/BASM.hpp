@@ -93,7 +93,8 @@ public:
 			std::vector<std::vector<rda::CloudPart>> min_cloud_parts;
 			for(auto it = reduce_median_clouds.begin(); it != reduce_median_clouds.end(); ++it){
 				std::vector<rda::CloudPart> min_parts;
-				rda::adaptiveRdp(rda::CloudPart(*it), min_rdp_size, min_rdp_eps, min_parts);
+				rda::CloudPart cp(*it);
+				rda::adaptiveRDP(cp, min_rdp_eps, min_rdp_size, cp.range(), min_parts);
 				min_cloud_parts.push_back(min_parts);
 			}
 	
@@ -219,7 +220,7 @@ public:
 			
 			
 			for(auto i = 0; i < sf_clouds.size(); i++){
-				v_4.addCloud(sf_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 0.0f, 1.0f);
+				v_4.addCloud(sf_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 1.0f, 1.0f);
 				//v_2.addCloud(sf_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 1.0f, 1.0f);			
 			}
 			
@@ -229,7 +230,7 @@ public:
 			}
 	
 			for(auto i = 0; i < reduce_median_clouds.size(); i++){
-				v_2.addCloud(reduce_median_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 0.0f, 1.0f);
+				v_2.addCloud(reduce_median_clouds[i], rda::CIRCLES, 0.0f, 1.0f, 0.0f, 1.0f);
 				v_3.addCloud(reduce_median_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 0.0f, 0.1f);
 			}
 	

@@ -79,94 +79,6 @@ namespace {
 		return line_1.length() < line_2.length();
 	}
 
-	struct Split {
-		double length;
-		double error;
-		double score;
-		rda::Range range;
-		Split* parent;
-		vector<Split*> children;	
-	};
-
-	/*Adaptive Ramer-Douglas-Paker*/
-	void buildSplitTree(rda::CloudPart c, int min_part_size, double min_error, Split* parent, int depth){
-	
-		if( (parent->range.size() > min_part_size) ){
-			
-			double avarage = 0.0;
-			double deviation = 0.0;
-		
-			int index = 0;
-			//new
-			//parent->error = maxDistanceFromLine(c.cloud(), parent->range.start, parent->range.end,avarage, deviation, index);		
-			//parent->error = deviation;
-			//endnew
-			parent->error = maxDistanceFromLine(c.cloud(), parent->range.start, parent->range.end, index);
-			if(parent->error < 10)
-				parent->error = 10;
-			parent->length = rda::CloudPart(c.cloud(), parent->range).line().length();
-			parent->score =   parent->length  / (parent->error);						
-	
-			if(parent->error <= min_error)
-				return;
-	
-			Split* s1 = new Split();
-			s1->range = rda::Range(parent->range.start, index);
-			s1->parent = parent;		
-			Split* s2 = new Split();
-			s2->range = rda::Range(index, parent->range.end);
-			s2->parent = parent;
-	
-			/*if( s1->range.size() <= min_part_size || s2->range.size() <= min_part_size)
-				return;*/
-	
-			parent->children.push_back(s1);
-			parent->children.push_back(s2);
-	
-			buildSplitTree(c, min_part_size, min_error, s1, depth + 1);
-			buildSplitTree(c, min_part_size, min_error, s2, depth + 1);
-		}
-		else{
-			parent->score = -1;
-		}
-	}
-	
-	int findBestSplit(Split* s, list<Split*>& parts){
-	
-		if(s->children.size() > 0){
-			int cn = 0; // children number (number of last elements in vector parts)
-			for(int i = 0; i < s->children.size(); i++){
-				cn += findBestSplit(s->children[i], parts);
-			}
-			
-			auto sit = parts.end(); // parts.end() - cn; to use list.erase instead of vector.erase
-			for(int i=0; i < cn; i++)
-				--sit;
-			for(auto it = sit; it != parts.end(); ++it){
-				if((*it)->score > s->score){
-					return cn;				
-				}
-			}
-			parts.erase(sit, parts.end());		
-		}
-		parts.push_back(s);
-	
-		return 1;
-	}
-	
-	void destroySplitTree(Split* root){
-		
-		if(root->children.size() > 0){		
-			for(int i = 0; i < root->children.size(); i++){
-				 destroySplitTree(root->children[i]);
-			}
-		}
-	
-		for(int i = 0; i < root->children.size(); i++){
-			delete root->children[i];
-		}
-	}
-
 	rda::Line extendLine(rda::ApproximiedCloudPart p1, rda::ApproximiedCloudPart p2){
 		rda::Line pl = rda::projectionLineToLine(p2.approx_line(), p1.approx_line());
 		return rda::maxDiagonal(p1.approx_line(), pl);	
@@ -367,22 +279,33 @@ rda::Line rda::middleLine(rda::ApproximiedCloudPart acp_1, rda::ApproximiedCloud
 	return mid_line;
 }
 
-void rda::adaptiveRdp(rda::CloudPart cloud_part, int min_part_size, double min_error, std::vector<rda::CloudPart>& lines){
+double rda::adaptiveRDP(rda::CloudPart cloud, double min_error, int min_size, rda::Range range, std::vector<rda::CloudPart>& line_parts)
+{
+	int mid_index;
+	double error = std::max(maxDistanceFromLine(cloud.cloud(), range.start, range.end, mid_index), 3.0);
+	double significance = rda::CloudPart(cloud.cloud(), range).line().length() / error;
 
-	Split* parent = new Split();
-	parent->parent = nullptr;
-	parent->range  = cloud_part.range();
+	if(range.size() >= min_size){
+		if(error > min_error){
+			std::vector<rda::CloudPart> left_lines;
+			std::vector<rda::CloudPart> right_lines;
+			double left_significance = adaptiveRDP(cloud, min_error, min_size, rda::Range(range.start, mid_index), left_lines);
+			double right_significance = adaptiveRDP(cloud, min_error, min_size, rda::Range(mid_index, range.end), right_lines);
 
-	buildSplitTree(cloud_part, min_part_size, min_error, parent, 0);
-
-	list<Split*> parts;
-	findBestSplit(parent, parts);
-
-	for(auto it = parts.begin(); it != parts.end(); it++){
-		lines.push_back(rda::CloudPart(cloud_part.cloud(), (*it)->range));
+			if(significance < left_significance || significance < right_significance){
+				line_parts.insert(line_parts.end(), left_lines.begin(), left_lines.end());
+				line_parts.insert(line_parts.end(), right_lines.begin(), right_lines.end());
+				return std::max(left_significance, right_significance);
+			}			
+		}
+	}
+	else{		
+		significance = -1;
 	}
 
-	destroySplitTree(parent);
+	line_parts.push_back(rda::CloudPart(cloud.cloud(), range));
+
+	return significance;
 }
 
 void rda::distances(rda::CloudPtr cloud, std::vector<double>& dists)
@@ -444,7 +367,7 @@ void rda::lineSegmentation(std::vector<rda::CloudPart>& parts, double threshold,
 void rda::adaptiveLineSegmentation(std::vector<rda::CloudPart>& parts, int min_part_size, double min_error,std::vector<rda::CloudPart>& line_parts)
 {
 	for(int i=0; i < parts.size(); i++){		
-		rda::adaptiveRdp(parts[i], min_part_size, min_error, line_parts);
+		rda::adaptiveRDP(parts[i], min_error, min_part_size, parts[i].range(), line_parts);
 	}
 }
 

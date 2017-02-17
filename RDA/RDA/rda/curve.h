@@ -22,7 +22,7 @@ namespace rda {
 	//Ramer Douglas Peucker algorithm
 	void rdpMinimization(rda::CloudPart cloud_part, int start, int end, double threshold, std::vector<rda::CloudPart>& lines);
 
-	void adaptiveRdp(rda::CloudPart cloud_part, int min_part_size, double min_error, std::vector<rda::CloudPart>& lines);
+	double adaptiveRDP(rda::CloudPart cloud, double min_error, int min_size, rda::Range range, std::vector<rda::CloudPart>& line_parts);
 
 	void simpleMovingAvarage(rda::CloudPtr cloud, int window_size, rda::CloudPtr sma_cloud);
 

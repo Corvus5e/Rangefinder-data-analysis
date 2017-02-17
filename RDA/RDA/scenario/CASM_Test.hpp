@@ -1,6 +1,6 @@
 
-#ifndef RDA_TEST_H
-#define RDA_TEST_H
+#ifndef CASM_TEST_H
+#define CASM_TEST_H
 
 #include <scenario\Scenario.h>
 
