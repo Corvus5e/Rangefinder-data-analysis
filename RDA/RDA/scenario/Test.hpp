@@ -9,6 +9,7 @@
 #include <rda\io\vizualization.h>
 
 #include <rda\curve.h>
+#include <time.h>
 
 class Test : public Scanario{
 public:
@@ -20,34 +21,58 @@ public:
 
 		std::vector<double> distances;		
 		std::vector<rda::Range> part_ranges;
-		rda::CloudPtr cloud (new rda::Cloud);
-		std::vector<std::vector<rda::CloudPart>> lines_clusters;
+		rda::CloudPtr cloud (new rda::Cloud);		
+		std::vector<rda::Line> lines;
+		std::vector<rda::CloudPart> rdp_clouds;
+		std::vector<rda::Line> rdp_lines;
+
+		std::vector<rda::CloudPart> nrdp_clouds;
+		std::vector<rda::Line> nrdp_lines;
 
 		cloud = rda::readScene(console.getParam("-file"), distances, part_ranges);
+		int points_increment = atof(console.getParam("-points_increment").c_str());
+		int stable_angles = atof(console.getParam("-stable_angles").c_str());
+		double angle_threashold = atof(console.getParam("-angle_threashold").c_str());
 
-		//Params		
-		double min_rdp_eps = atof(console.getParam("-min_rdp_eps").c_str());
-		int min_rdp_size = atof(console.getParam("-min_rdp_size").c_str());
+		double min_error = atof(console.getParam("-min_error").c_str());
+		int min_size = atof(console.getParam("-min_size").c_str());
+
+		std::vector<rda::CloudPtr> angles_clouds; 
+		std::vector<rda::CloudPtr> derivative_clouds; 
 		
-		std::vector<rda::CloudPart> cloud_parts;
-		for(auto i = 0; i < part_ranges.size(); i++){
-			cloud_parts.push_back(rda::CloudPart(cloud, rda::Range(part_ranges[i])));			
-		}				
-
-		std::vector<rda::CloudPart> minimized_parts;
-		rda::adaptiveLineSegmentation(cloud_parts, min_rdp_size, min_rdp_eps, minimized_parts);
-
-		std::vector<rda::Line> min_cloud_parts_lines;
-		for(auto i = minimized_parts.begin(); i != minimized_parts.end(); ++i){
-			min_cloud_parts_lines.push_back(i->line());
+		clock_t partitioning_clock;
+		std::cout << "Points :" <<  cloud->size() << std::endl;	
+		partitioning_clock = clock();
+		
+		for(auto i = 0; i < part_ranges.size(); i++){						
+			rda::adaptiveRDP(rda::CloudPart(cloud, part_ranges[i]), min_error, min_size, rdp_clouds);
+			rda::adaptiveRDP(rda::CloudPart(cloud, part_ranges[i]), min_error, min_size, nrdp_clouds, rda::stDevSignificanceEstimator);
 		}
-		// Vizualization
 
+		for(auto i = 0; i < rdp_clouds.size(); i++){
+			rdp_lines.push_back(rdp_clouds[i].line());
+		}
+
+		for(auto i = 0; i < nrdp_clouds.size(); i++){
+			nrdp_lines.push_back(nrdp_clouds[i].line());
+		}
+
+
+		double time = ((float)(clock() - partitioning_clock)) / CLOCKS_PER_SEC;
+		std::cout << "Wasted time :" <<  time << "sec" << std::endl;					
+
+		// Vizualization
 		rda::Vizualizer::init(&argc, argv);	
 		rda::Vizualizer v;	
-		v.createWindow("adaptiveRDP new test", 720, 720, 2, 2);
+		rda::Vizualizer v_1;	
+		v.createWindow("new rdp test", 720, 720, 2, 2);
+		v_1.createWindow("adaptive rdp", 720, 720, 720, 2);
+
+		v_1.addCloud(cloud, rda::CIRCLES, 0.0f, 0.0f, 0.0f, 0.3f);
+		v_1.addClouds(rdp_lines, rda::LINES, 1.0f);
 		v.addCloud(cloud, rda::CIRCLES, 0.0f, 0.0f, 0.0f, 0.3f);		
-		v.addClouds(min_cloud_parts_lines, rda::LINES, 1.0f);
+		v.addClouds(nrdp_lines, rda::LINES, 1.0f);
+
 
 		rda::Vizualizer::start();	
 	}

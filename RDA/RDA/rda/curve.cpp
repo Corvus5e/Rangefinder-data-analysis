@@ -7,7 +7,6 @@
 #include <rda\common.h>
 #include <rda\function\LeastSquares.h>
 
-
 using namespace std;
 using namespace rda;
 using namespace function;
@@ -18,28 +17,16 @@ namespace {
 
 	double maxDistanceFromLine(rda::CloudPtr cloud, int start_index, int end_index, int& index){		
 		
-		double max_dist = 0.0;
+		index = start_index;
+		double max_dist = 0.0;		
 	
-		int points_number = end_index - start_index -  1;
-	
-		if(points_number <= 0){
-			index = start_index;
-			max_dist = 0;
-		}
-		else{
-	
-			max_dist = 0;
-			index = start_index;
-	
-			double curr_dist = 0;
-	
-			for(int i = 1; i <= points_number; i++){
-	
-				curr_dist = rda::distancePointToLine(cloud->at(start_index), cloud->at(end_index), cloud->at(start_index + i));
-	
+		if(end_index - start_index > 1){			
+			double curr_dist = 0;	
+			for(int i = start_index + 1; i < end_index; i++){
+				curr_dist = rda::distancePointToLine(cloud->at(start_index), cloud->at(end_index), cloud->at(i));	
 				if(curr_dist > max_dist){
 					max_dist = curr_dist;
-					index = start_index + i;
+					index = i;
 				}
 			}
 		}
@@ -48,27 +35,22 @@ namespace {
 	
 	double maxDistanceFromLine(rda::CloudPtr cloud, int start_index, int end_index, double& avarage, double& deviation, int& index){
 	
-		double max_dist = 0.0;
 		avarage = 0.0;
 		deviation = 0.0;
-		vector<double> dists;
-		int points_number = end_index - start_index -  1;
+		index = start_index;
+
+		double max_dist = 0.0;		
+		vector<double> dists;		
 	
-		if(points_number <= 0){
-			index = start_index;
-			max_dist = 0;
-		}
-		else{
-			max_dist = 0;
-			index = start_index;
+		if(end_index - start_index > 1){									
 			double curr_dist = 0;
-			for(int i = 1; i <= points_number; i++){
-				curr_dist = rda::distancePointToLine(cloud->at(start_index), cloud->at(end_index), cloud->at(start_index + i));
-				dists.push_back(curr_dist);
+			for(int i = start_index + 1; i < end_index; i++){
+				curr_dist = rda::distancePointToLine(cloud->at(start_index), cloud->at(end_index), cloud->at(i));				
 				if(curr_dist > max_dist){
 					max_dist = curr_dist;
-					index = start_index + i;
+					index = i;
 				}
+				dists.push_back(curr_dist);
 			}
 			deviation = rda::standartDeviation(dists.begin(), dists.end(), avarage);
 		}
@@ -88,6 +70,19 @@ namespace {
 		rda::CloudPtr cloud ( new rda::Cloud);
 		double overlapping = 0.0;
 		return rda::middleLine(l1, l2, &overlapping);	
+	}
+
+	template<class InputIterator>
+	bool stable(InputIterator begin, InputIterator end, double eps)
+	{
+		auto s = *(begin + 1) - *begin;
+		while(begin != (end - 1)){
+			auto diff = *(begin + 1) - *begin;
+			if((s / diff) <= 0)
+				return false;
+			++begin;
+		}
+		return true;
 	}
 }
 
@@ -147,6 +142,35 @@ void rda::rdpMinimization(rda::CloudPart cloud_part, int start, int end, double 
 			lines.push_back(rda::CloudPart(cloud_part.cloud(), rda::Range(start, end)));			
 		}
 	}
+}
+
+void rda::incrementalLineFit(rda::CloudPart cloud, double threashold, int points_increment, int stable_angles, std::vector<rda::Line>& lines)
+{
+	int start_index = cloud.range().start;
+	int end_index = start_index + points_increment;
+	std::vector<double> angles;
+
+	Line start_line = rda::CloudPart(cloud.cloud(), Range(start_index, end_index)).line();//lsLineApproximation(rda::CloudPart(cloud.cloud(), Range(start_index, end_index)));
+	end_index += points_increment;
+
+	while(end_index + points_increment < cloud.range().end){
+		Line line = lsLineApproximation(rda::CloudPart(cloud.cloud(), Range(start_index, end_index)));//rda::CloudPart(cloud.cloud(), Range(start_index, end_index)).line();		
+		angles.push_back(Vector::angle(start_line.directionVector(), line.directionVector()));
+
+		if(angles.size() >= stable_angles){
+			if(*std::max_element(angles.begin(), angles.end()) > threashold && stable(angles.end() - stable_angles, angles.end(), threashold)){
+				lines.push_back(lsLineApproximation(rda::CloudPart(cloud.cloud(), Range(start_index, end_index - points_increment*stable_angles))));
+				//lines.push_back(rda::CloudPart(cloud.cloud(), Range(start_index, end_index - points_increment*stable_angles)).line());
+				start_index = end_index - points_increment * stable_angles;
+				end_index = start_index + points_increment;
+				start_line = lsLineApproximation(rda::CloudPart(cloud.cloud(), Range(start_index, end_index)));//rda::CloudPart(cloud.cloud(), Range(start_index, end_index)).line();				
+				angles.clear();
+			}
+		}
+		end_index += points_increment;				
+	}
+	lines.push_back(lsLineApproximation(rda::CloudPart(cloud.cloud(), Range(start_index, cloud.range().end))));
+	//lines.push_back((rda::CloudPart(cloud.cloud(), Range(start_index, cloud.range().end)).line()));
 }
 
 double rda::distancePointToSegment(rda::Point& segment_start, rda::Point& segment_end, rda::Point& point)
@@ -279,18 +303,34 @@ rda::Line rda::middleLine(rda::ApproximiedCloudPart acp_1, rda::ApproximiedCloud
 	return mid_line;
 }
 
-double rda::adaptiveRDP(rda::CloudPart cloud, double min_error, int min_size, rda::Range range, std::vector<rda::CloudPart>& line_parts)
+double rda::simpleSignificanceEstimator(rda::CloudPart cloud, double& error, int& index)
+{
+	error = std::max(maxDistanceFromLine(cloud.cloud(), cloud.range().start, cloud.range().end, index), 3.0);
+	return cloud.line().length() / error;
+}
+
+double rda::stDevSignificanceEstimator(rda::CloudPart cloud, double& error, int& index)
+{	
+	double avarage = 0;
+	double st_d = 0;
+	maxDistanceFromLine(cloud.cloud(), cloud.range().start, cloud.range().end, avarage, st_d, index); 
+
+	error = st_d;
+	return cloud.line().length() / st_d;
+}
+
+double rda::adaptiveRDP(rda::CloudPart cloud, double min_error, int min_size, std::vector<rda::CloudPart>& line_parts, double (*significanceEstimator)(rda::CloudPart, double&, int&))
 {
 	int mid_index;
-	double error = std::max(maxDistanceFromLine(cloud.cloud(), range.start, range.end, mid_index), 3.0);
-	double significance = rda::CloudPart(cloud.cloud(), range).line().length() / error;
-
-	if(range.size() >= min_size){
+	double error;
+	double significance = significanceEstimator(cloud, error, mid_index);
+	
+	if(cloud.range().size() >= min_size){
 		if(error > min_error){
 			std::vector<rda::CloudPart> left_lines;
 			std::vector<rda::CloudPart> right_lines;
-			double left_significance = adaptiveRDP(cloud, min_error, min_size, rda::Range(range.start, mid_index), left_lines);
-			double right_significance = adaptiveRDP(cloud, min_error, min_size, rda::Range(mid_index, range.end), right_lines);
+			double left_significance = adaptiveRDP(rda::CloudPart(cloud.cloud(),rda::Range(cloud.range().start, mid_index)), min_error, min_size, left_lines, significanceEstimator);
+			double right_significance = adaptiveRDP(rda::CloudPart(cloud.cloud(), rda::Range(mid_index, cloud.range().end)), min_error, min_size, right_lines, significanceEstimator);
 
 			if(significance < left_significance || significance < right_significance){
 				line_parts.insert(line_parts.end(), left_lines.begin(), left_lines.end());
@@ -303,7 +343,7 @@ double rda::adaptiveRDP(rda::CloudPart cloud, double min_error, int min_size, rd
 		significance = -1;
 	}
 
-	line_parts.push_back(rda::CloudPart(cloud.cloud(), range));
+	line_parts.push_back(cloud);
 
 	return significance;
 }
@@ -367,7 +407,7 @@ void rda::lineSegmentation(std::vector<rda::CloudPart>& parts, double threshold,
 void rda::adaptiveLineSegmentation(std::vector<rda::CloudPart>& parts, int min_part_size, double min_error,std::vector<rda::CloudPart>& line_parts)
 {
 	for(int i=0; i < parts.size(); i++){		
-		rda::adaptiveRDP(parts[i], min_error, min_part_size, parts[i].range(), line_parts);
+		rda::adaptiveRDP(parts[i], min_error, min_part_size, line_parts);
 	}
 }
 

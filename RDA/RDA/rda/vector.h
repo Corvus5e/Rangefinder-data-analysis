@@ -18,6 +18,7 @@ namespace rda {
 
 		Vector(rda::Point& start, rda::Point& end) : x(end.x - start.x), y(end.y - start.y) { }
 
+		//scalar product
 		double operator*(const Vector& v)
 		{
 			return (this->x*v.x + this->y*v.y);
@@ -31,6 +32,11 @@ namespace rda {
 		Vector unit()
 		{					
 			return Vector(this->x / this->length(), this->y / this->length());
+		}
+
+		static double pseudoScalarProduct(Vector& vec_1, Vector& vec_2)
+		{
+			return vec_1.x * vec_2.y - vec_1.y * vec_2.x;
 		}
 
 		static bool isParallel(Vector& vec_1, Vector& vec_2)

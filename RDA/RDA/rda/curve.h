@@ -22,7 +22,15 @@ namespace rda {
 	//Ramer Douglas Peucker algorithm
 	void rdpMinimization(rda::CloudPart cloud_part, int start, int end, double threshold, std::vector<rda::CloudPart>& lines);
 
-	double adaptiveRDP(rda::CloudPart cloud, double min_error, int min_size, rda::Range range, std::vector<rda::CloudPart>& line_parts);
+	// significance = length / (max distance from endline)
+	double simpleSignificanceEstimator(rda::CloudPart cloud, double& error, int& index);
+
+	// significance = length / (standart deviation of distances from endline)
+	double stDevSignificanceEstimator(rda::CloudPart cloud, double& error, int& index);	
+
+	double adaptiveRDP(rda::CloudPart cloud, double min_error, int min_size, std::vector<rda::CloudPart>& line_parts, double (*significanceEstimator)(rda::CloudPart, double&, int&) = simpleSignificanceEstimator);
+
+	void incrementalLineFit(rda::CloudPart cloud, double threashold, int points_increment, int stable_angles, std::vector<rda::Line>& lines);
 
 	void simpleMovingAvarage(rda::CloudPtr cloud, int window_size, rda::CloudPtr sma_cloud);
 
