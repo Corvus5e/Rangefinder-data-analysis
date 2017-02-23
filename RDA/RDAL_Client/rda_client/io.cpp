@@ -111,7 +111,7 @@ void client::readScene(std::string file, std::vector<double>& input, int& sensor
 	f.close();	
 }
 
-void client::readXYDScene(std::string file, std::vector<double>& input, int& sensor){
+void client::readXYDScene(std::string file, std::vector<double>& input){
 	
 	//setlocale(LC_ALL, "RUS");
 
@@ -122,31 +122,9 @@ void client::readXYDScene(std::string file, std::vector<double>& input, int& sen
 	
 	std::string buf;
 	getline(f, buf);
-
-	sensor = SensorNum::FrontSensor;
+	
 	int lineNumber = 0;
-	int readFromLineNum = 0;
-	int size = 3;		// количество считываемых элементов
-	int offset = 4; // сдвиг относительно 0-ого
-	//std::vector<double> points;
-
-	std::vector<std::string> a;
-	split(buf, " ", a);
-
-	if (strcmp(a[2].c_str(), "0.") == 0){
-		readFromLineNum = 1;
-	}
-	if (strcmp(a[2].c_str(), "1.") == 0){
-		readFromLineNum = 16;
-	}
-	if (strcmp(a[2].c_str(), "2.") == 0){
-		readFromLineNum = 27;		
-		senorInFile(SensorNum::FrontSensor, &size, &offset);		
-	}	
-	std::vector<double> data;
-	data.resize(size);
-
-	bool isPoint = false;
+	int readFromLineNum = 1;	
 
 	input.push_back(0); // size will be here
 
@@ -154,35 +132,12 @@ void client::readXYDScene(std::string file, std::vector<double>& input, int& sen
 		if (lineNumber >= readFromLineNum){
 			std::vector<std::string> a;
 			split(buf, " ", a);
-
-			for (int i = 0; i < size; i++){ // read x, y, d
-				if (a.back()[0] != 'n'){					
-					data[i] = atof(a[offset + i].c_str());
-					isPoint = true;
-				}
-				else {
-					isPoint = false;
-				}
-			}
-			data[size-1] = atof(a.back().c_str());
-
-			if(isPoint){				
-				
-				input.push_back(data[0]); // x
-				input.push_back(data[1]); // y
-				input.push_back(0.0); // 
-				input.push_back(0.0); // 
-				input.push_back(data.back()); // distance
-			}
-		}
-
-		if(lineNumber == 6){
-			std::vector<std::string> a;
-			split(buf, " ", a);
-			if(strcmp(a.back().c_str(),"Rf_L:") == 0)
-				sensor = SensorNum::LeftSensor;
-			if(strcmp(a.back().c_str(),"Rf_R:") == 0)
-				sensor = SensorNum::RightSensor;
+										
+			input.push_back(atof(a[4].c_str())); // x
+			input.push_back(atof(a[5].c_str())); // y
+			input.push_back(0.0); // 
+			input.push_back(0.0); // 
+			input.push_back(atof(a[6].c_str())); // distance			
 		}
 
 		getline(f, buf);

@@ -51,16 +51,18 @@ int main(int argc, char* argv[])
 
 	
 	try {
-		readXYDScene(file, data, sensor_id);
+
+		readXYDScene(file, data);
+		std::cout << "Read points : " << data.size()  << std::endl;
 
 		double **output;
-		int clusters_number;
+		int clusters_number = 0;
 		
 		double amount_time = 0;
 		clock_t amount_clock;
 		amount_clock = clock();
 		
-		extractLines(&data[0], clustering_eps, clustering_minPts, min_rdp_eps, max_dist, min_part_size, merge_dist, merge_angle, filter_kN, filter_threshold, output, clusters_number);
+		casmLineExtractor(&data[0], clustering_eps, clustering_minPts, min_rdp_eps, max_dist, min_part_size, merge_dist, merge_angle, filter_kN, filter_threshold, output, clusters_number);
 		
 		amount_time = ((float)(clock() - amount_clock)) / CLOCKS_PER_SEC;
 		std::cout << "Amount time :" << amount_time  << "sec" << std::endl;
@@ -84,12 +86,11 @@ int main(int argc, char* argv[])
 
 		Vizualizer::init(&argc, argv);
 		Vizualizer v1;
+		v1.createWindow("Lines", 600, 600, 2, 2);	
 
 		v1.addClouds(lines_cluster, client::LINES, 1.0f);	
-		v1.addCloud(source_cloud, client::POINTS, 1.0f, 1.0f, 1.0f, 0.3f);	
-		v1.createWindow("Lines", 600, 600, 2, 2);	
-		
-		
+		v1.addCloud(source_cloud, client::POINTS, 1.0f, 1.0f, 1.0f, 0.3f);		
+				
 		Vizualizer::start();		
 
 	}

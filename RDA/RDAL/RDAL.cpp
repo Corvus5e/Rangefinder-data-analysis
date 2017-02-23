@@ -14,8 +14,7 @@
 
 const int  POINT_SIZE = 5;
 
-/* ---- Functions to work with points in X,Y ----- */
-
+// Ignores zero data
 void convertRawArrayToPointCloud(double* input, rda::CloudPtr output_cloud,	 std::vector<double>& distances){
 		
 	int size = input[0] - 1;
@@ -23,13 +22,14 @@ void convertRawArrayToPointCloud(double* input, rda::CloudPtr output_cloud,	 std
 	if( ( size % POINT_SIZE) == 0){		 
 	
 		for(int i = 0; i < size ; i+= POINT_SIZE){
-			output_cloud->points.push_back(rda::Point(input[i+1], input[i+2], input[i+3]));
-			distances.push_back(input[i+5]);
+			if(input[i+5] != 0.0){
+				output_cloud->points.push_back(rda::Point(input[i+1], input[i+2], input[i+3]));
+				distances.push_back(input[i+5]);
+			}
 		}
 	}
 	else{		
-
-		throw rda::RdaException(std::string("Wrong size."));
+		throw rda::RdaException(std::string("Failed to read input format: Wrong size."));
 	}
 
 }
@@ -78,8 +78,6 @@ void convertPointCloudToFormatArray(std::vector<rda::CloudPtr>& clusters, double
 
 	}
 }
-
-/* ---- Functions to work with distances and robots positions ----- */
 
 void convertLinesToFormatArray(std::vector<std::vector<rda::Line>>& lines, double**& output, int& clusters_size){
 
@@ -155,7 +153,7 @@ void convertApproxCloudPartsToFormatArray(std::vector<std::vector<rda::Approximi
 
  /*  ------- RDAL.h implementation ------- */
 
-void extractLines(double* input, double clustering_eps, int clustering_minPts, double min_rdp_eps, double max_dist, int min_part_size, double merge_dist, double merge_angle, int filter_kN, double filter_treshold, double**& output, int& clusters_size){
+void casmLineExtractor(double* input, double clustering_eps, int clustering_minPts, double min_rdp_eps, double max_dist, int min_part_size, double merge_dist, double merge_angle, int filter_kN, double filter_treshold, double**& output, int& clusters_size){
 	
 	rda::CloudPtr cloud(new rda::Cloud);
 	std::vector<double> distances;
@@ -175,11 +173,6 @@ int pointSize(){
 
 	return POINT_SIZE;
 }
-
-/*void clearMemory(double*& ptr){
-	delete[] ptr;
-	ptr = 0;
-}*/
 
 void clearMemory(double**& ptr, int size){
 	for(int i = 0; i < size; i++){
