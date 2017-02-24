@@ -53,12 +53,16 @@ namespace rda {
 
 	void naiveBreakpointDetector(rda::CloudPtr cloud, std::vector<int>& v_indexes, double max_diff, int min_points, std::vector<std::vector<int>>& indexes);
 
+	void naiveBreakpointDetector(rda::CloudPart cloud, double max_diff, int min_points, std::vector<std::vector<int>>& indexes);
+
 	void lineSegmentation(std::vector<rda::CloudPart>& parts, double threshold, std::vector<rda::CloudPart>& line_parts);	
 
 	void adaptiveLineSegmentation(std::vector<rda::CloudPart>& parts, int min_part_size, double min_error, std::vector<rda::CloudPart>& line_parts);
 
 	//Least Squares Line Approximation
 	void lsLineApproximation(std::vector<rda::CloudPart>& parts, std::vector<rda::ApproximiedCloudPart>& line_approx);
+
+	void lsRDPApproximation(rda::CloudPart cloud_part, int order, double step, double threashold, std::vector<rda::CloudPart>& line_approx);
 
 	rda::Line lsLineApproximation(rda::CloudPart& part);
 

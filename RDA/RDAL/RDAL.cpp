@@ -9,6 +9,7 @@
 #include <rda\segmentation.h>
 #include <rda\curve.h>
 #include <rda\line_extraction.h>
+#include <rda\function\LeastSquares.h>
 
 #include "RDAL.h"
 
@@ -41,8 +42,9 @@ void convertRawArrayToPointCloud(double* input, rda::CloudPtr output_cloud,	 std
 					}
 				}
 			}
-
 		}
+		if(!closed_part)
+			part_ranges.push_back(rda::Range(start_index, distances.size() - 1));
 	}
 	else{		
 		throw rda::RdaException(std::string("Failed to read input format: Wrong size."));
@@ -294,6 +296,24 @@ void lsLineApproximation(double* input, double**& output, int& clusters_size)
 
 }
 
+void lsRDPApproximation(double* input, int order, double step, double threashold, double**& output, int& clusters_size)
+{
+	std::vector<double> distances;		
+	std::vector<rda::Range> part_ranges;
+	rda::CloudPtr cloud (new rda::Cloud);	
+
+	convertRawArrayToPointCloud(input, cloud, distances, part_ranges);
+
+	std::vector<std::vector<rda::CloudPart>> lines_clusters(part_ranges.size());
+
+	for(auto i = 0; i < part_ranges.size(); i++){
+
+		rda::lsRDPApproximation(rda::CloudPart(cloud, part_ranges[i]), order, step, threashold, lines_clusters[i]);
+	}
+
+	convertCloudPartsLinesToFormatArray(lines_clusters, output, clusters_size);
+}
+
 void statisticalDistanceFilter(double* input, int neighbours_number, double threshold, double**& output, int& clusters_size)
 {
 	std::vector<double> distances;		
@@ -314,6 +334,116 @@ void statisticalDistanceFilter(double* input, int neighbours_number, double thre
 		filtered_clouds.push_back(c);
 	}
 	convertPointCloudToFormatArray(filtered_clouds, output, clusters_size);
+}
+
+void statisticalFilter(double* input, int neighbours_number, double threshold, double**& output, int& clusters_size)
+{
+	std::vector<double> distances;			
+	rda::CloudPtr cloud (new rda::Cloud);
+
+	convertRawArrayToPointCloud(input, cloud, distances);
+
+	rda::CloudPtr filtered_cloud(new rda::Cloud);
+	std::vector<rda::CloudPtr> filtered_clouds;
+
+	rda::statisticalFilter(cloud, *filtered_cloud, neighbours_number, threshold);
+	filtered_clouds.push_back(filtered_cloud);
+
+	convertPointCloudToFormatArray(filtered_clouds, output, clusters_size);
+}
+
+void reduceMedianFilter(double* input, int window_size, double**& output, int& clusters_size)
+{
+	std::vector<double> distances;		
+	std::vector<rda::Range> part_ranges;
+	rda::CloudPtr cloud (new rda::Cloud);	
+
+	convertRawArrayToPointCloud(input, cloud, distances, part_ranges);
+	std::vector<rda::CloudPtr> filtered_clouds;
+
+	for(auto i = 0; i < part_ranges.size(); i++)
+	{
+		std::vector<int> indexes;
+		rda::reduceMedianFilter(distances, part_ranges[i], window_size, indexes);
+		rda::CloudPtr fc(new rda::Cloud);
+		for(auto j = 0; j < indexes.size(); j++){
+			fc->push_back(cloud->at(indexes[j]));
+		}
+		filtered_clouds.push_back(fc);
+	}
+
+	convertPointCloudToFormatArray(filtered_clouds, output, clusters_size);
+}
+
+void naiveBreakpointDetector(double* input, double max_diff, int min_points, double**& output, int& clusters_size)
+{
+	std::vector<double> distances;		
+	std::vector<rda::Range> part_ranges;
+	rda::CloudPtr cloud (new rda::Cloud);	
+
+	convertRawArrayToPointCloud(input, cloud, distances, part_ranges);
+	std::vector<rda::CloudPtr> clouds;
+
+	for(auto i = 0; i < part_ranges.size(); i++){		
+		std::vector<std::vector<int>> indexes;
+		rda::naiveBreakpointDetector(rda::CloudPart(cloud, part_ranges[i]), max_diff, min_points, indexes);		
+		for(auto j = 0; j < indexes.size(); j++){
+			rda::CloudPtr pc(new rda::Cloud);
+			for(auto k = 0; k < indexes[j].size(); k++){
+				pc->push_back(cloud->at(indexes[j][k]));
+			}			
+			clouds.push_back(pc);
+		}		
+	}
+
+	convertPointCloudToFormatArray(clouds, output, clusters_size);
+}
+
+void euclideanClusterExctraction(double* input, double eps, int min_points, int max_points, double**& output, int& clusters_size)
+{
+	rda::CloudPtr cloud(new rda::Cloud);
+	std::vector<double> distances;	
+
+	convertRawArrayToPointCloud(input, cloud, distances); 
+
+	std::vector<rda::CloudPtr> clusters;
+	rda::euclideanClusterExctraction(cloud, clusters, eps, min_points, max_points);
+
+	convertPointCloudToFormatArray(clusters, output, clusters_size);
+}
+
+void adaptiveRDP(double* input, double min_error, int min_size, double**& output, int& clusters_size)
+{
+	std::vector<double> distances;		
+	std::vector<rda::Range> part_ranges;
+	rda::CloudPtr cloud (new rda::Cloud);	
+
+	convertRawArrayToPointCloud(input, cloud, distances, part_ranges);
+
+	std::vector<std::vector<rda::CloudPart>> lines_clusters(part_ranges.size());
+
+	for(auto i = 0; i < part_ranges.size(); i++){		
+		rda::adaptiveRDP(rda::CloudPart(cloud, part_ranges[i]), min_error, min_size, lines_clusters[i]);
+	}
+
+	convertCloudPartsLinesToFormatArray(lines_clusters, output, clusters_size);	
+}
+
+void adaptiveRDPStD(double* input, double min_error, int min_size, double**& output, int& clusters_size)
+{
+	std::vector<double> distances;		
+	std::vector<rda::Range> part_ranges;
+	rda::CloudPtr cloud (new rda::Cloud);	
+
+	convertRawArrayToPointCloud(input, cloud, distances, part_ranges);
+
+	std::vector<std::vector<rda::CloudPart>> lines_clusters(part_ranges.size());
+
+	for(auto i = 0; i < part_ranges.size(); i++){		
+		rda::adaptiveRDP(rda::CloudPart(cloud, part_ranges[i]), min_error, min_size, lines_clusters[i], rda::stDevSignificanceEstimator);
+	}
+
+	convertCloudPartsLinesToFormatArray(lines_clusters, output, clusters_size);	
 }
 
 int pointSize(){

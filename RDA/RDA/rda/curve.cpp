@@ -397,11 +397,60 @@ void rda::naiveBreakpointDetector(rda::CloudPtr cloud, std::vector<int>& v_index
 		indexes.push_back(tmp);	
 }
 
+void rda::naiveBreakpointDetector(rda::CloudPart cloud, double max_diff, int min_points, std::vector<std::vector<int>>& indexes)
+{
+	std::vector<int> tmp;
+	
+	for(auto i = cloud.range().start; i < cloud.range().end; i++){
+
+		tmp.push_back(i);
+
+		if( std::abs( rda::distancePointToPoint(cloud.at(i), cloud.at(i+1)) ) > max_diff ){
+			if( tmp.size() >= min_points)
+				indexes.push_back(tmp);	
+			tmp.clear();
+		}		
+	}
+
+	tmp.push_back(cloud.range().end);
+	if(tmp.size() >= min_points)
+		indexes.push_back(tmp);	
+}
+
 void rda::lineSegmentation(std::vector<rda::CloudPart>& parts, double threshold, std::vector<rda::CloudPart>& line_parts)
 {	
 	for(int i=0; i < parts.size(); i++){		
 		rda::rdpMinimization(parts[i], parts[i].range().start, parts[i].range().end, threshold, line_parts);
 	}
+}
+
+void rda::lsRDPApproximation(rda::CloudPart cloud, int order, double step, double threashold, std::vector<rda::CloudPart>& line_approx)
+{	
+	rda::Line corr_line(cloud.first_point(), cloud.last_point());
+	rda::Vector oX(1, 0);
+	
+	double angle = rda::Vector::angle(corr_line.directionVector(), oX) * rda::pi / 180.0;
+	if(corr_line.k() > 0)
+		angle *= -1;
+	
+	rda::CloudPtr rotated_cloud (new rda::Cloud);
+	rda::rotateCloud(cloud.cloud(), cloud.range().start, cloud.range().end, -angle , rotated_cloud);		
+	
+	LeastSquares ls(order);
+	ls.init(rotated_cloud, 0, rotated_cloud->size() - 1);
+	ls.approximate();
+	
+	rda::CloudPtr appr_line_cloud (new rda::Cloud);	
+	double from_x = std::min(rotated_cloud->front().x, rotated_cloud->back().x);
+	double to_x = std::max(rotated_cloud->front().x, rotated_cloud->back().x);
+	for(double x = from_x; x < to_x; x+= step){
+		appr_line_cloud->push_back(rda::Point(x, ls.value(x), 0));
+	}
+	
+	rda::CloudPtr unrotated_cloud (new rda::Cloud);
+	rda::rotateCloud(appr_line_cloud,  angle, unrotated_cloud);
+	
+	rda::rdpMinimization(rda::CloudPart(unrotated_cloud), 0, unrotated_cloud->size() - 1, threashold, line_approx); 	
 }
 
 void rda::adaptiveLineSegmentation(std::vector<rda::CloudPart>& parts, int min_part_size, double min_error,std::vector<rda::CloudPart>& line_parts)

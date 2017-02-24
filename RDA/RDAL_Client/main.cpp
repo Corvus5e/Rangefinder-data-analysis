@@ -57,6 +57,12 @@ int main(int argc, char* argv[])
 	//double min_rdp_eps = atof(client::Console::getParam("-min_rdp_eps").c_str());
 	int min_rdp_size = atof(client::Console::getParam("-min_rdp_size").c_str());
 
+	int ls_order = atof(client::Console::getParam("-ls_order").c_str());
+	double ls_step = atof(client::Console::getParam("-ls_step").c_str());
+
+	int minPts = atof(client::Console::getParam("-min_pts").c_str());
+	double eps = atof(client::Console::getParam("-eps").c_str());
+
 	std::vector<double> data;
 
 	
@@ -79,7 +85,13 @@ int main(int argc, char* argv[])
 
 		//rdpMinimization(&data[0], min_rdp_eps, output, clusters_number);
 		//lsLineApproximation(&data[0], output, clusters_number);
-		statisticalDistanceFilter(&data[0], statistacal_kN, statistacal_threashold, output, clusters_number);
+		//statisticalDistanceFilter(&data[0], statistacal_kN, statistacal_threashold, output, clusters_number);
+		//statisticalFilter(&data[0], statistacal_kN, statistacal_threashold, output, clusters_number);
+		//reduceMedianFilter(&data[0], reduce_median_window,  output, clusters_number);
+		//lsRDPApproximation(&data[0], ls_order, ls_step, min_rdp_eps, output, clusters_number);  
+		//naiveBreakpointDetector(&data[0], max_dist_diff, min_segm_points, output, clusters_number);
+		//euclideanClusterExctraction(&data[0], eps, minPts, 9999, output, clusters_number);
+		adaptiveRDPStD(&data[0], min_rdp_eps, min_rdp_size, output, clusters_number);
 		
 		amount_time = ((float)(clock() - amount_clock)) / CLOCKS_PER_SEC;
 		std::cout << "Amount time :" << amount_time  << "sec" << std::endl;
@@ -105,8 +117,8 @@ int main(int argc, char* argv[])
 		Vizualizer v1;
 		v1.createWindow("Lines", 600, 600, 2, 2);	
 
-		v1.addClouds(lines_cluster, client::POINTS, 1.0f);	
-		v1.addCloud(source_cloud, client::POINTS, 1.0f, 1.0f, 1.0f, 0.1f);		
+		v1.addClouds(lines_cluster, client::LINES, 1.0f);	
+		v1.addCloud(source_cloud, client::POINTS, 1.0f, 1.0f, 1.0f, 0.5f);		
 				
 		Vizualizer::start();		
 

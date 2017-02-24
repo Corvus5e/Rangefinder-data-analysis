@@ -47,7 +47,24 @@ extern "C" {
 	*/	
 	__declspec(dllexport) void __cdecl lsLineApproximation(double* input, double**& output, int& clusters_size);		
 
+	/*	 
+	 * Least Squares function approximied by RDP
+	*/
+	__declspec(dllexport) void __cdecl lsRDPApproximation(double* input, int order, double step, double threashold, double**& output, int& clusters_size);		
+
 	__declspec(dllexport) void __cdecl statisticalDistanceFilter(double* input, int neighbours_number, double threshold, double**& output, int& clusters_size);
+
+	__declspec(dllexport) void __cdecl statisticalFilter(double* input, int neighbours_number, double threshold, double**& output, int& clusters_size);
+
+	__declspec(dllexport) void __cdecl reduceMedianFilter(double* input, int window_size, double**& output, int& clusters_size);
+
+	__declspec(dllexport) void __cdecl naiveBreakpointDetector(double* input, double max_diff, int min_points, double**& output, int& clusters_size);
+
+	__declspec(dllexport) void __cdecl euclideanClusterExctraction(double* input, double eps, int min_points,int max_points, double**& output, int& clusters_size);
+
+	__declspec(dllexport) void __cdecl adaptiveRDP(double* input, double min_error, int min_size, double**& output, int& clusters_size);
+
+	__declspec(dllexport) void __cdecl adaptiveRDPStD(double* input, double min_error, int min_size, double**& output, int& clusters_size);
 
 	// Returns the number of elements needed to store point in array
 	__declspec(dllexport) int __cdecl pointSize();	
