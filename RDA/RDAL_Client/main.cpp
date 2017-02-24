@@ -36,6 +36,8 @@ int main(int argc, char* argv[])
 {	
 	Console::readArgs(argc, argv);
 	std::string file = Console::getParam("-file");
+
+	//casm params
 	double clustering_eps = atof(client::Console::getParam("-clustering_eps").c_str());
 	int clustering_minPts = atoi(client::Console::getParam("-clustering_minPts").c_str());
 	double min_rdp_eps = atof(client::Console::getParam("-min_rdp_eps").c_str());
@@ -45,7 +47,15 @@ int main(int argc, char* argv[])
 	double merge_angle = atof(client::Console::getParam("-merge_angle").c_str());
 	int filter_kN = atoi(client::Console::getParam("-filter_kN").c_str());
 	double filter_threshold = atof(client::Console::getParam("-filter_threshold").c_str());
-	int sensor_id = 0;
+	
+	//basm params
+	int statistacal_kN = atof(client::Console::getParam("-statistacal_kN").c_str());
+	double statistacal_threashold = atof(client::Console::getParam("-statistacal_threashold").c_str());
+	int min_segm_points = atof(client::Console::getParam("-min_segm_points").c_str());
+	double max_dist_diff = atof(client::Console::getParam("-max_dist_diff").c_str());
+	int reduce_median_window = atof(client::Console::getParam("-reduce_median_window").c_str());
+	//double min_rdp_eps = atof(client::Console::getParam("-min_rdp_eps").c_str());
+	int min_rdp_size = atof(client::Console::getParam("-min_rdp_size").c_str());
 
 	std::vector<double> data;
 
@@ -62,7 +72,14 @@ int main(int argc, char* argv[])
 		clock_t amount_clock;
 		amount_clock = clock();
 		
-		casmLineExtractor(&data[0], clustering_eps, clustering_minPts, min_rdp_eps, max_dist, min_part_size, merge_dist, merge_angle, filter_kN, filter_threshold, output, clusters_number);
+		//casmLineExtractor(&data[0], clustering_eps, clustering_minPts, min_rdp_eps, max_dist, min_part_size, merge_dist, merge_angle, filter_kN, filter_threshold, output, clusters_number);
+		/*basmLineExtractor(&data[0], statistacal_kN, statistacal_threashold, min_segm_points, max_dist_diff,
+									reduce_median_window,
+									min_rdp_eps, min_rdp_size, output, clusters_number);*/
+
+		//rdpMinimization(&data[0], min_rdp_eps, output, clusters_number);
+		//lsLineApproximation(&data[0], output, clusters_number);
+		statisticalDistanceFilter(&data[0], statistacal_kN, statistacal_threashold, output, clusters_number);
 		
 		amount_time = ((float)(clock() - amount_clock)) / CLOCKS_PER_SEC;
 		std::cout << "Amount time :" << amount_time  << "sec" << std::endl;
@@ -88,8 +105,8 @@ int main(int argc, char* argv[])
 		Vizualizer v1;
 		v1.createWindow("Lines", 600, 600, 2, 2);	
 
-		v1.addClouds(lines_cluster, client::LINES, 1.0f);	
-		v1.addCloud(source_cloud, client::POINTS, 1.0f, 1.0f, 1.0f, 0.3f);		
+		v1.addClouds(lines_cluster, client::POINTS, 1.0f);	
+		v1.addCloud(source_cloud, client::POINTS, 1.0f, 1.0f, 1.0f, 0.1f);		
 				
 		Vizualizer::start();		
 

@@ -118,7 +118,7 @@ void rda::basmExtractor(rda::CloudPtr cloud,
 	for(auto it = reduce_median_clouds.begin(); it != reduce_median_clouds.end(); ++it){
 		std::vector<rda::CloudPart> min_parts;
 		rda::CloudPart cp(*it);
-		rda::adaptiveRDP(cp, min_rdp_eps, min_rdp_size, min_parts);
+		rda::adaptiveRDP(cp, min_rdp_eps, min_rdp_size, min_parts, rda::stDevSignificanceEstimator);
 		min_cloud_parts.push_back(min_parts);
 	}
 	

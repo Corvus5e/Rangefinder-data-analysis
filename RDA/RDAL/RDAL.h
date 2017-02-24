@@ -11,6 +11,7 @@
 
 extern "C" {
 	
+	
 	__declspec(dllexport) void __cdecl casmLineExtractor(double* input,			// 
 														double clustering_eps,  //80
 														int clustering_minPts,  //3
@@ -23,6 +24,30 @@ extern "C" {
 														double filter_treshold,	// 0.9 (if model data -> 5.0)
 														double**& output,		//
 														int& clusters_size);	// 
+
+
+	__declspec(dllexport) void __cdecl basmLineExtractor(double* input,					// 
+														int statistical_kn,				//
+														double statistical_threashold,	//
+														int min_segm_points,			//
+														double max_dist_diff,			//
+														int rmed_window_size,			//
+														int min_rdp_eps,				//
+														int min_rdp_size,				//
+														double**& output,				//
+														int& clusters_size);			// 
+
+	/*
+	 * Ramer-Douglas-Peucker		 
+	*/
+	__declspec(dllexport) void __cdecl rdpMinimization(double* input, double threshold, double**& output, int& clusters_size);
+
+	/*	 
+	 * Least Squares 1st order
+	*/	
+	__declspec(dllexport) void __cdecl lsLineApproximation(double* input, double**& output, int& clusters_size);		
+
+	__declspec(dllexport) void __cdecl statisticalDistanceFilter(double* input, int neighbours_number, double threshold, double**& output, int& clusters_size);
 
 	// Returns the number of elements needed to store point in array
 	__declspec(dllexport) int __cdecl pointSize();	
