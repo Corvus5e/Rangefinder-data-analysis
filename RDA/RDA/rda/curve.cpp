@@ -319,6 +319,74 @@ double rda::stDevSignificanceEstimator(rda::CloudPart cloud, double& error, int&
 	return cloud.line().length() / st_d;
 }
 
+double rda::stDevDirSignificanceEstimator(rda::CloudPart cloud, double& error, int& index)
+{
+	std::vector<double> dists; 
+
+	double max_dist = 0.0;
+	index = cloud.begin();	
+	double curr_dist = 0.0;	
+
+	for(auto i = cloud.range().start + 1; i < cloud.range().end; i++){		
+		curr_dist = rda::distancePointToLine(cloud.first_point(), cloud.last_point(), cloud.at(i));		
+		if(curr_dist > max_dist){
+			max_dist = curr_dist;
+			index = i;
+		}
+
+		rda::Vector v1(cloud.first_point(), cloud.last_point());		
+		rda::Vector v2(cloud.first_point(), cloud.at(i));		
+		
+		if(rda::Vector::pseudoScalarProduct(v1, v2) < 0){
+			dists.push_back(curr_dist);
+		}
+		else{
+			dists.push_back(-curr_dist);
+		}
+	}
+
+	double avarage = 0;
+	double st_d = 0;
+
+	st_d  = rda::standartDeviation(dists.begin(), dists.end(), avarage);
+	error = std::max(st_d, 3.0);
+
+	return distancePointToPoint(cloud.first_point(), cloud.last_point()) / st_d;
+}
+
+double rda::meanSignificanceEstimator(rda::CloudPart cloud, double& error, int& index)
+{
+		
+	std::vector<double> dists; 
+
+	double max_dist = 0.0;
+	index = cloud.begin();	
+	double curr_dist = 0.0;	
+
+	for(auto i = cloud.range().start + 1; i < cloud.range().end; i++){		
+		curr_dist = rda::distancePointToLine(cloud.first_point(), cloud.last_point(), cloud.at(i));		
+		if(curr_dist > max_dist){
+			max_dist = curr_dist;
+			index = i;
+		}
+
+		rda::Vector v1(cloud.first_point(), cloud.last_point());		
+		rda::Vector v2(cloud.first_point(), cloud.at(i));		
+		
+		if(rda::Vector::pseudoScalarProduct(v1, v2) < 0){
+			dists.push_back(curr_dist);
+		}
+		else{
+			dists.push_back(-curr_dist);
+		}
+	}
+	
+	error = max_dist;
+	double mean = std::max(std::abs(rda::meanValue<double>(dists.begin(), dists.end())), 4.0);
+
+	return cloud.line().length() / mean;
+}
+
 double rda::adaptiveRDP(rda::CloudPart cloud, double min_error, int min_size, std::vector<rda::CloudPart>& line_parts, double (*significanceEstimator)(rda::CloudPart, double&, int&))
 {
 	int mid_index;

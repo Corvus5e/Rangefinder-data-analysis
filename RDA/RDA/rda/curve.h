@@ -28,6 +28,11 @@ namespace rda {
 	// significance = length / (standart deviation of distances from endline)
 	double stDevSignificanceEstimator(rda::CloudPart cloud, double& error, int& index);	
 
+	double stDevDirSignificanceEstimator(rda::CloudPart cloud, double& error, int& index);
+
+	// significance = length / (mean of distances from endline) //distance can be negative
+	double meanSignificanceEstimator(rda::CloudPart cloud, double& error, int& index);	
+
 	double adaptiveRDP(rda::CloudPart cloud, double min_error, int min_size, std::vector<rda::CloudPart>& line_parts, double (*significanceEstimator)(rda::CloudPart, double&, int&) = simpleSignificanceEstimator);
 
 	void incrementalLineFit(rda::CloudPart cloud, double threashold, int points_increment, int stable_angles, std::vector<rda::Line>& lines);

@@ -79,9 +79,9 @@ int main(int argc, char* argv[])
 		amount_clock = clock();
 		
 		//casmLineExtractor(&data[0], clustering_eps, clustering_minPts, min_rdp_eps, max_dist, min_part_size, merge_dist, merge_angle, filter_kN, filter_threshold, output, clusters_number);
-		/*basmLineExtractor(&data[0], statistacal_kN, statistacal_threashold, min_segm_points, max_dist_diff,
+		basmLineExtractor(&data[0], statistacal_kN, statistacal_threashold, min_segm_points, max_dist_diff,
 									reduce_median_window,
-									min_rdp_eps, min_rdp_size, output, clusters_number);*/
+									min_rdp_eps, min_rdp_size, output, clusters_number);
 
 		//rdpMinimization(&data[0], min_rdp_eps, output, clusters_number);
 		//lsLineApproximation(&data[0], output, clusters_number);
@@ -91,7 +91,7 @@ int main(int argc, char* argv[])
 		//lsRDPApproximation(&data[0], ls_order, ls_step, min_rdp_eps, output, clusters_number);  
 		//naiveBreakpointDetector(&data[0], max_dist_diff, min_segm_points, output, clusters_number);
 		//euclideanClusterExctraction(&data[0], eps, minPts, 9999, output, clusters_number);
-		adaptiveRDPStD(&data[0], min_rdp_eps, min_rdp_size, output, clusters_number);
+		//adaptiveRDPStD(&data[0], min_rdp_eps, min_rdp_size, output, clusters_number);
 		
 		amount_time = ((float)(clock() - amount_clock)) / CLOCKS_PER_SEC;
 		std::cout << "Amount time :" << amount_time  << "sec" << std::endl;

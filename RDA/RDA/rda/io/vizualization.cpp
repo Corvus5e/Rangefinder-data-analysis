@@ -51,7 +51,7 @@ rda::Vizualizer::Vizualizer()
 {
 	eyeX = 0.0;
 	eyeY = 0.0;
-	eyeZ = 1000.0;
+	eyeZ = 2000.0;
 	lastX = 0;
 	lastY = 0;
 }
@@ -80,7 +80,7 @@ void rda::Vizualizer::createWindow(const char* title, int w, int h, int pos_x, i
 
 	objs[this->index] = this;
 
-	glClearColor(1, 1, 1, 0);
+	glClearColor(0, 0, 0, 0);
 	/*glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0.0, w, h, 0.0, -1, 1);
