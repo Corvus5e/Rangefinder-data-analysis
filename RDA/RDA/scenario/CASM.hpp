@@ -38,9 +38,9 @@ public :
 		
 		//Params		
 		int kN = atof(console.getParam("-filter_kN").c_str());
-		double threshold = atof(console.getParam("-filter_threashold").c_str());
-		double eps = atof(console.getParam("-eps").c_str());
-		int minPts = atoi(console.getParam("-minPts").c_str());
+		double threshold = atof(console.getParam("-filter_threshold").c_str());
+		double eps = atof(console.getParam("-clustering_eps").c_str());
+		int minPts = atoi(console.getParam("-clustering_minPts").c_str());
 		double max_dist = atof(console.getParam("-max_dist").c_str());					
 		double merge_dist = atof(console.getParam("-merge_dist").c_str());
 		double merge_angle = atof(console.getParam("-merge_angle").c_str());
@@ -185,7 +185,7 @@ public :
 			v5.addCloud(dist_cloud, rda::POINTS, 1.0, 1.0, 1.0, 1.0, 1.0f);
 			v5.addCloud(ls_dist_cloud, rda::POINTS, 0.0, 1.0, 0.0, 1.0);
 			
-			v.addCloud(cloud, rda::CIRCLES, 0.0f, 0.0f, 0.0f, 0.5f);					
+			v.addCloud(cloud, rda::CIRCLES, 1.0f, 1.0f, 1.0f, 1.0f);					
 						
 			v2.addClouds(min_clusters_patrs, rda::LINE_STRIP, 1.0f, 15.0f);
 			v2.addCloud(cloud_filtered, rda::CIRCLES, 0.4f, 0.4f, 0.4f, 0.5f);	

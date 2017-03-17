@@ -94,7 +94,7 @@ public:
 			for(auto it = reduce_median_clouds.begin(); it != reduce_median_clouds.end(); ++it){
 				std::vector<rda::CloudPart> min_parts;
 				rda::CloudPart cp(*it);
-				rda::adaptiveRDP(cp, min_rdp_eps, min_rdp_size, min_parts);
+				rda::adaptiveRDP(cp, min_rdp_eps, min_rdp_size, min_parts, rda::stDevDirSignificanceEstimator);
 				min_cloud_parts.push_back(min_parts);
 			}
 	
@@ -188,66 +188,63 @@ public:
 			v_4.createWindow("statistical filter", 700, 700, 20, 20);
 			v_7.createWindow("statistical distances", 700, 700, 20, 20);
 			v_5.createWindow("naive breakpoint detector", 700, 700, 20, 20);
-			v_2.createWindow("reduce median filter", 700, 700, 720, 20);
 			v_8.createWindow("reduce median filter distances", 700, 700, 20, 20);
+			v_2.createWindow("reduce median filter", 700, 700, 720, 20);			
 			v_3.createWindow("split&merge", 700, 700, 720, 20);		
 			v_6.createWindow("least squares", 700, 700, 720, 20);
 	
 			
-			for(auto i = 0; i < dists_clouds.size(); i++){
-				//v.addCloud(dists_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 0.0f, 1.0f);
-				v.addCloud(dists_clouds[i], rda::LINE_STRIP, 0.0f, 0.0f, 0.0f, 1.0f);			
-				v.addCloud(dists_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 0.0f, 1.0f);			
+			for(auto i = 0; i < dists_clouds.size(); i++){				
+				v.addCloud(dists_clouds[i], rda::LINE_STRIP, 0.0f, 1.0f, 0.0f, 1.0f);			
+				v.addCloud(dists_clouds[i], rda::CIRCLES, 1.0f, 1.0f, 1.0f, 1.0f);			
+				v_7.addCloud(dists_clouds[i], rda::CIRCLES, 1.0f, 1.0f, 1.0f, 1.0f);
+				v_7.addCloud(dists_clouds[i], rda::LINE_STRIP, 0.0f, 1.0f, 0.0f, 1.0f);
 			}
 	
 	
 			for(auto i = 0; i < sf_dists_clouds.size(); i++){
-				v_7.addCloud(sf_dists_clouds[i], rda::LINE_STRIP, 0.0f, 0.0f, 0.0f, 1.0f);			
-				v_7.addCloud(sf_dists_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 0.0f, 1.0f);			
-				v_8.addCloud(sf_dists_clouds[i], rda::LINE_STRIP, 0.0f, 0.0f, 0.0f, 1.0f);
-				v.addCloud(sf_dists_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 0.0f, 1.0f);	
+				v_7.addCloud(sf_dists_clouds[i], rda::LINE_STRIP, 0.0f, 0.0f, 1.0f, 1.0f);			
+				v_7.addCloud(sf_dists_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 1.0f, 1.0f);	
+				v_8.addCloud(sf_dists_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 1.0f, 1.0f);
+				v_8.addCloud(sf_dists_clouds[i], rda::LINE_STRIP, 0.0f, 0.0f, 1.0f, 1.0f);					
 			}
-	
-			// dists sum test
-			//v.addCloud(sum_dist_cloud, rda::LINE_STRIP, 1.0f, 0.0f, 0.0f, 1.0f);
-			//v.addCloud(sum_dist_cloud, rda::CIRCLES, 0.0f, 0.0f, 0.0f, 1.0f);
-			//v.addCloud(sum_dist_av_cloud, rda::LINES, 0.0f, 0.0f, 0.0f, 1.0f);
-			//v.addCloud(sum_dist_std_cloud, rda::LINES, 0.0f, 0.0f, 1.0f, 1.0f);
+
 			
-			v_1.addCloud(raw_cloud, rda::CIRCLES, 0.0f, 0.0f, 0.0f, 1.0f);
-			v_2.addCloud(raw_cloud, rda::CIRCLES, 0.0f, 0.0f, 0.0f, 1.0f);
-			v_4.addCloud(raw_cloud, rda::CIRCLES, 0.0f, 0.0f, 0.0f, 1.0f);
+			v_1.addCloud(raw_cloud, rda::CIRCLES, 1.0f, 1.0f, 1.0f, 1.0f);
+			//v_2.addCloud(raw_cloud, rda::CIRCLES, 1.0f, 1.0f, 1.0f, 1.0f);
+			v_4.addCloud(raw_cloud, rda::CIRCLES, 1.0f, 1.0f, 1.0f, 1.0f);
 			
 			
 			for(auto i = 0; i < sf_clouds.size(); i++){
-				v_4.addCloud(sf_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 1.0f, 1.0f);
-				//v_2.addCloud(sf_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 1.0f, 1.0f);			
+				v_4.addCloud(sf_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 1.0f, 1.0f);							
+				v_2.addCloud(sf_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 1.0f, 1.0f);							
 			}
 			
 			for(auto i = 0; i < filtered_dists_clouds.size(); i++){
-				v_8.addCloud(filtered_dists_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 0.0f, 1.0f);
+				v_8.addCloud(filtered_dists_clouds[i], rda::CIRCLES, 1.0f, 0.0f, 0.0f, 1.0f);
 				v_8.addCloud(filtered_dists_clouds[i], rda::LINE_STRIP, 1.0f, 0.0f, 0.0f, 1.0f);			
 			}
 	
 			for(auto i = 0; i < reduce_median_clouds.size(); i++){
-				v_2.addCloud(reduce_median_clouds[i], rda::CIRCLES, 0.0f, 1.0f, 0.0f, 1.0f);
-				v_3.addCloud(reduce_median_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 0.0f, 0.1f);
+				v_2.addCloud(reduce_median_clouds[i], rda::CIRCLES, 1.0f, 0.0f, 0.0f, 1.0f);
+				v_2.addCloud(reduce_median_clouds[i], rda::LINE_STRIP, 1.0f, 0.0f, 0.0f, 1.0f);
+				v_3.addCloud(reduce_median_clouds[i], rda::CIRCLES, 1.0f, 0.0f, 0.0f, 0.5f);
 			}
 	
 			for(auto i = 0; i < min_cloud_parts_lines.size(); i++){
-				v_3.addCloud(min_cloud_parts_lines[i], rda::LINES, 0.0f, 0.0f, 0.0f, 1.0f, 5.0f);		
+				v_3.addCloud(min_cloud_parts_lines[i], rda::LINES, 1.0f, 1.0f, 1.0f, 1.0f, 3.0f);		
 			}
 	
 			for(auto i = 0; i < break_clouds.size(); i++){
-				v_5.addCloud(break_clouds[i], rda::LINE_STRIP, 0.0f, 0.0f, 0.0f, 1.0f);
-				v_5.addCloud(break_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 0.0f, 1.0f);
+				v_5.addCloud(break_clouds[i], rda::LINE_STRIP, 1.0f, 1.0f, 1.0f, 1.0f);
+				v_5.addCloud(break_clouds[i], rda::CIRCLES, 1.0f, 1.0f, 1.0f, 1.0f);
 			}
 	
 			v_5.addClouds(break_clouds, rda::CIRCLES, 1.0f);
 	
-			v_6.addCloud(raw_cloud, rda::CIRCLES, 0.0f, 0.0f, 0.0f, 0.1f);
+			v_6.addCloud(raw_cloud, rda::CIRCLES, 1.0f, 1.0f, 1.0f, 0.3f);
 			for(auto i = 0; i < ls_lines.size(); i++){			
-				v_6.addCloud(ls_lines[i], rda::LINES, 0.0f, 0.0f, 0.0f, 1.0f, 5.0f);
+				v_6.addCloud(ls_lines[i], rda::LINES, 0.0f, 1.0f, 0.0f, 1.0f, 5.0f);
 			}
 	
 			rda::Vizualizer::start();

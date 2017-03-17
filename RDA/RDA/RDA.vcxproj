@@ -108,6 +108,7 @@
     <ClInclude Include="scenario\BASM_Test.hpp" />
     <ClInclude Include="scenario\CASM.hpp" />
     <ClInclude Include="scenario\BASM.hpp" />
+    <ClInclude Include="scenario\DistErrorResearch.hpp" />
     <ClInclude Include="scenario\Scenario.h" />
     <ClInclude Include="scenario\CASM_Test.hpp" />
     <ClInclude Include="scenario\Test.hpp" />

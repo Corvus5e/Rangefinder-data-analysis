@@ -98,7 +98,7 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr rda::readScene(std::string file, std::vector
 	return cloud;
 }
 
-pcl::PointCloud<pcl::PointXYZ>::Ptr rda::readScene(std::string file, std::vector<double>& distances, std::vector<rda::Range>& part_ranges)
+pcl::PointCloud<pcl::PointXYZ>::Ptr rda::readScene(std::string& file, std::vector<double>& distances, std::vector<rda::Range>& part_ranges)
 {
 	pcl::PointCloud<pcl::PointXYZ>::Ptr cloud( new pcl::PointCloud<pcl::PointXYZ> );
 	std::fstream f;

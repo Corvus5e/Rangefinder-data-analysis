@@ -117,8 +117,8 @@ int main(int argc, char* argv[])
 		Vizualizer v1;
 		v1.createWindow("Lines", 600, 600, 2, 2);	
 
-		v1.addClouds(lines_cluster, client::LINES, 1.0f);	
-		v1.addCloud(source_cloud, client::POINTS, 1.0f, 1.0f, 1.0f, 0.5f);		
+		v1.addClouds(lines_cluster, client::LINES, 1.0f, 4.0f);	
+		v1.addCloud(source_cloud, client::POINTS, 1.0f, 1.0f, 1.0f, 0.5f, 3.0f);		
 				
 		Vizualizer::start();		
 

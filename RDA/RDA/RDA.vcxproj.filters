@@ -36,9 +36,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Файлы ресурсов</Filter>
-    </ClCompile>
     <ClCompile Include="rda\common.cpp">
       <Filter>Файлы исходного кода\rda</Filter>
     </ClCompile>
@@ -89,6 +86,9 @@
     </ClCompile>
     <ClCompile Include="rda\line_extraction.cpp">
       <Filter>Файлы исходного кода\rda</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Файлы исходного кода</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -168,6 +168,9 @@
       <Filter>Заголовочные файлы\scenario</Filter>
     </ClInclude>
     <ClInclude Include="scenario\Test.hpp">
+      <Filter>Заголовочные файлы\scenario</Filter>
+    </ClInclude>
+    <ClInclude Include="scenario\DistErrorResearch.hpp">
       <Filter>Заголовочные файлы\scenario</Filter>
     </ClInclude>
   </ItemGroup>

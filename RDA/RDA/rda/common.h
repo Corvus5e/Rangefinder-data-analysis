@@ -59,6 +59,18 @@ namespace rda {
 	}
 
 	template<typename T, class InputIterator>
+	T medianValue(InputIterator begin, InputIterator end)
+	{
+		T mean = T(0);
+		auto size = end - begin;
+		std::vector<T> tmp(size);		
+		std::copy(begin, end, tmp.begin());
+		std::sort(tmp.begin(), tmp.end());
+
+		return tmp[size / 2];
+	}
+
+	template<typename T, class InputIterator>
 	T standartDeviation(InputIterator begin, InputIterator end, T& mean)
 	{
 		mean = meanValue<T>(begin, end);

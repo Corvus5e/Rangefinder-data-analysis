@@ -306,7 +306,7 @@ rda::Line rda::middleLine(rda::ApproximiedCloudPart acp_1, rda::ApproximiedCloud
 double rda::simpleSignificanceEstimator(rda::CloudPart cloud, double& error, int& index)
 {
 	error = std::max(maxDistanceFromLine(cloud.cloud(), cloud.range().start, cloud.range().end, index), 4.0);
-	return cloud.line().length() / error;
+	return rda::distancePointToPoint(cloud.first_point(), cloud.last_point()) / error;
 }
 
 double rda::stDevSignificanceEstimator(rda::CloudPart cloud, double& error, int& index)
