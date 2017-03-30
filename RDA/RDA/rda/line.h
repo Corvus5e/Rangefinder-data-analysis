@@ -10,6 +10,8 @@ namespace rda {
 	class Line {
 
 		rda::CloudPtr cloud_; // cloud for two points
+		rda::Point* start_;
+		rda::Point* end_;
 
 	public:
 

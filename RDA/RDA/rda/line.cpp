@@ -2,22 +2,24 @@
 
 #include <rda\line.h>
 
-rda::Line::Line(rda::Point& start, rda::Point& end)
+rda::Line::Line(rda::Point& start, rda::Point& end) : start_(&start), end_(&end)
 {
 	rda::CloudPtr tmp(new rda::Cloud);
 	this->cloud_ = tmp->makeShared();
 	this->cloud_->push_back(start);
-	this->cloud_->push_back(end);	
+	this->cloud_->push_back(end);		
 }
 
 rda::Point& rda::Line::start()
 {
 	return this->cloud_->at(0);
+	//return *this->start_;
 }
 
 rda::Point& rda::Line::end()
 {
 	return this->cloud_->at(1);
+	//return *this->end_;
 }
 
 rda::Vector rda::Line::normVector()
@@ -35,20 +37,16 @@ rda::Point rda::Line::middlePoint()
 	return rda::Point( (start().x + end().x) / 2.0, (start().y + end().y) / 2.0, (start().z + end().z) / 2.0 );
 }
 
-double rda::Line::k()
+double rda::Line::k() // throws if dx = 0
 {
-	double dx = this->end().x - this->start().x;
-	if(dx != 0)
-		return (this->end().y - this->start().y) / dx;
-	return 0;	// !
+	double dx = this->end().x - this->start().x;	
+	return (this->end().y - this->start().y) / dx;	
 }
 
-double rda::Line::b()
+double rda::Line::b() // throws if dx = 0
 {
 	double dx = this->end().x - this->start().x;
-	if(dx != 0)
-		return (this->start().y * this->end().x - this->start().x * this->end().y) / dx;
-	return 0;	// !
+	return (- this->start().x * (this->end().y - this->start().y) / dx + this->start().y);	
 }
 
 double rda::Line::length()
