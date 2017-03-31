@@ -143,7 +143,7 @@ pcl::PointCloud<pcl::PointXYZ>::Ptr rda::readScene(std::string& file, std::vecto
 				no_data = 0;
 			}
 			else{
-				if(++no_data == 3){
+				if(++no_data == 5){
 					if(!closed_part){
 						part_ranges.push_back(rda::Range(start_index, distances.size() - 1));
 						closed_part = true;

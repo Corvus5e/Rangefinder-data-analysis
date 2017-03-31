@@ -267,6 +267,21 @@ public:
 			}
 		}
 
+		std::vector<rda::CloudPtr> twise_filtered_clouds;
+		std::vector<std::vector<double>> tf_distances(filtered_clouds.size());
+		std::vector<std::vector<int>> tf_indexes(filtered_clouds.size());
+
+		for(auto i = 0; i < filtered_clouds.size(); i++){	
+			twise_filtered_clouds.push_back(rda::CloudPtr(new rda::Cloud));
+			if(filtered_clouds[i]->size() > 0){
+				filter(rda::CloudPart(dist_filtered_cloud[i]), filter_window, ls, filter_error, tf_indexes[i]);				
+				for(auto jt = tf_indexes[i].begin(); jt != tf_indexes[i].end(); ++jt){
+					twise_filtered_clouds.back()->push_back(filtered_clouds[i]->at(*jt));
+					tf_distances[i].push_back(dists_filtered[i].at(*jt));
+				}
+			}
+		}
+
 		double rdp_error = atof(args.getParam("-rdp_error").c_str());
 		readErrorFile(args.getParam("-error_file"), error_cloud);
 
@@ -274,13 +289,13 @@ public:
 		std::vector<rda::CloudPtr> rdp_clouds;
 
 		//rdp(rda::CloudPart(raw_dist_cloud), rdp_error, ls, 1, indexes);
-		for(auto i = 0; i < filtered_clouds.size(); i++){
-			if(filtered_clouds[i]->size() > 0){
-				rdp2d(rda::CloudPart(filtered_clouds[i]), dists_filtered[i], rdp_error, ls, 1, rdp_indexes[i]);
+		for(auto i = 0; i < twise_filtered_clouds.size(); i++){
+			if(twise_filtered_clouds[i]->size() > 0){
+				rdp2d(rda::CloudPart(twise_filtered_clouds[i]), tf_distances[i], rdp_error, ls, 1, rdp_indexes[i]);
 				rdp_clouds.push_back(rda::CloudPtr(new rda::Cloud));
 				for(auto j = 0; j < rdp_indexes[i].size(); j++){
 					//rdp_dist_cloud->push_back(raw_dist_cloud->at(rdp_indexes[j]));
-					rdp_clouds.back()->push_back(filtered_clouds[i]->at(rdp_indexes[i][j]));
+					rdp_clouds.back()->push_back(twise_filtered_clouds[i]->at(rdp_indexes[i][j]));
 				}
 			}
 		}
@@ -294,9 +309,11 @@ public:
 		rda::Vizualizer v_2;	
 		rda::Vizualizer v_3;
 		rda::Vizualizer v_4;		
+		rda::Vizualizer v_5;		
 		v_1.createWindow("standart deviation", 720, 720, 722, 2);				
 		v_3.createWindow("raw distances", 720, 720, 2, 2);
 		v_4.createWindow("raw cloud 2d", 720, 720, 722, 2);
+		v_5.createWindow("line filter", 720, 720, 2, 2);
 
 		v_1.addCloud(error_cloud, rda::CIRCLES, 0.0f, 0.0f, 1.0f, 1.0f);
 		v_1.addCloud(approx_error_cloud, rda::LINE_STRIP, 1.0f, 0.0f, 1.0f, 1.0f);		
@@ -312,7 +329,13 @@ public:
 		v_4.addCloud(raw_cloud, rda::CIRCLES, 1.0f, 1.0f, 1.0f, 1.0f);
 		for(auto i = 0; i < filtered_clouds.size(); i++){
 			v_4.addCloud(filtered_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 1.0f, 1.0f);
+			v_5.addCloud(filtered_clouds[i], rda::CIRCLES, 1.0f, 1.0f, 1.0f, 1.0f);
 		}
+
+		for(auto i = 0; i < twise_filtered_clouds.size(); i++){
+			v_5.addCloud(twise_filtered_clouds[i], rda::CIRCLES, 0.0f, 0.0f, 1.0f, 1.0f);
+		}
+	
 		for(auto i = 0; i < rdp_clouds.size(); i++){
 			v_4.addCloud(rdp_clouds[i], rda::LINE_STRIP, 1.0f, 1.0f, 0.0f, 1.0f);
 			v_4.addCloud(rdp_clouds[i], rda::CIRCLES, 1.0f, 0.0f, 0.0f, 1.0f);
