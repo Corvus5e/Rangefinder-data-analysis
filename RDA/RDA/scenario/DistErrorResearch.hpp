@@ -64,7 +64,7 @@ private:
 				max_diff = std::abs(cloud.at(i).y - dist_hyp);
 			}
 		}
-		std::cout << "error: " << max_diff << std::endl;
+
 		return  max_dev;		
 	}
 
@@ -97,9 +97,7 @@ private:
 	void rdp2d(rda::CloudPart& cloud, std::vector<double>& distances, double error, function::LeastSquares& error_function, int min_segm_size, std::vector<int>& indexes)
 	{
 		int mid_index = 0;
-		double max_dev = maxDeviationFromEndLine2d(cloud, distances, error_function, mid_index);
-		
-		std::cout << "Max dev: " << max_dev << std::endl;				
+		double max_dev = maxDeviationFromEndLine2d(cloud, distances, error_function, mid_index);			
 
 		if(max_dev > error){
 			std::vector<int> indexes_left;
@@ -171,6 +169,25 @@ private:
 		}
 	}
 
+	void adaptiveBreakpointDetector(rda::CloudPart cloud, function::LeastSquares& error_function, double error, int min_points, std::vector<rda::Range>& ranges)
+	{		
+		auto start = cloud.begin();
+		auto end = start + 1;
+
+		for(end = cloud.begin() + 1; end <= cloud.end(); end++){		
+			double expected_error = error_function.value(std::min(cloud.at(end - 1).y, cloud.at(end).y));
+			if( std::abs( cloud.at(end - 1).y - cloud.at(end).y)  > error *  expected_error){
+				if( end - start >= min_points){
+					ranges.push_back(rda::Range(start, end - 1));										
+				}
+				start = end;
+			}		
+		}
+		
+		if(end - start >= min_points)
+			ranges.push_back(rda::Range(start, end - 1));	
+	}
+
 	void readErrorFile(std::string& file, rda::CloudPtr error_cloud)
 	{
 		std::string line;
@@ -226,35 +243,45 @@ public:
 
 		int filter_window = atof(args.getParam("-filter_window").c_str());
 		double filter_error = atof(args.getParam("-filter_error").c_str());	
+		int min_segm_points = atof(args.getParam("-min_segm_points").c_str());
+		double breakpoint_error = atof(args.getParam("-breakpoint_error").c_str());
+
+		std::vector<std::vector<rda::Range>> filtered_ranges(raw_part_ranges.size());
 		std::vector<std::vector<int>> indexes(raw_part_ranges.size());
 		std::vector<rda::CloudPtr> dist_filtered_cloud;
-		std::vector<std::vector<double>> dists_filtered(raw_part_ranges.size());
+		std::vector<std::vector<double>> dists_filtered((raw_part_ranges.size()));
 		std::vector<rda::CloudPtr> filtered_clouds;
 
 		for(auto i = 0; i < raw_part_ranges.size(); i++){
-			filter(rda::CloudPart(raw_dist_cloud, raw_part_ranges[i]), filter_window, ls, filter_error, indexes[i]);
+			adaptiveBreakpointDetector(rda::CloudPart(raw_dist_cloud, raw_part_ranges[i]), ls, breakpoint_error, min_segm_points, filtered_ranges[i]);
+			//filter(rda::CloudPart(raw_dist_cloud, raw_part_ranges[i]), filter_window, ls, filter_error, indexes[i]);			
 			dist_filtered_cloud.push_back(rda::CloudPtr(new rda::Cloud));
 			filtered_clouds.push_back(rda::CloudPtr(new rda::Cloud));
-			for(auto it = indexes[i].begin(); it != indexes[i].end(); ++it){
-				dist_filtered_cloud.back()->push_back(raw_dist_cloud->at(*it));
-				dists_filtered[i].push_back(raw_distances[*it]);
-				filtered_clouds.back()->push_back(raw_cloud->at(*it));
+			for(auto it = filtered_ranges[i].begin(); it != filtered_ranges[i].end(); ++it){
+				for(auto jt = it->start; jt <= it->end; jt++){
+					dist_filtered_cloud.back()->push_back(raw_dist_cloud->at(jt));
+					dists_filtered[i].push_back(raw_distances[jt]);
+					filtered_clouds.back()->push_back(raw_cloud->at(jt));
+				}
+												
 			}
 		}
 
 		double rdp_error = atof(args.getParam("-rdp_error").c_str());
 		readErrorFile(args.getParam("-error_file"), error_cloud);
 
-		std::vector<std::vector<int>> rdp_indexes(filtered_clouds.size());
+		std::vector<std::vector<int>> rdp_indexes(filtered_ranges.size());
 		std::vector<rda::CloudPtr> rdp_clouds;
 
 		//rdp(rda::CloudPart(raw_dist_cloud), rdp_error, ls, 1, indexes);
 		for(auto i = 0; i < filtered_clouds.size(); i++){
-			rdp2d(rda::CloudPart(filtered_clouds[i]), dists_filtered[i], rdp_error, ls, 1, rdp_indexes[i]);
-			rdp_clouds.push_back(rda::CloudPtr(new rda::Cloud));
-			for(auto j = 0; j < rdp_indexes[i].size(); j++){
-				//rdp_dist_cloud->push_back(raw_dist_cloud->at(rdp_indexes[j]));
-				rdp_clouds.back()->push_back(filtered_clouds[i]->at(rdp_indexes[i][j]));
+			if(filtered_clouds[i]->size() > 0){
+				rdp2d(rda::CloudPart(filtered_clouds[i]), dists_filtered[i], rdp_error, ls, 1, rdp_indexes[i]);
+				rdp_clouds.push_back(rda::CloudPtr(new rda::Cloud));
+				for(auto j = 0; j < rdp_indexes[i].size(); j++){
+					//rdp_dist_cloud->push_back(raw_dist_cloud->at(rdp_indexes[j]));
+					rdp_clouds.back()->push_back(filtered_clouds[i]->at(rdp_indexes[i][j]));
+				}
 			}
 		}
 
@@ -275,11 +302,10 @@ public:
 		v_1.addCloud(approx_error_cloud, rda::LINE_STRIP, 1.0f, 0.0f, 1.0f, 1.0f);		
 
 		v_3.addCloud(raw_dist_cloud, rda::CIRCLES, 1.0f, 1.0f, 1.0f, 1.0f);
-		v_3.addCloud(raw_dist_cloud, rda::LINE_STRIP, 1.0f, 1.0f, 1.0f, 0.4f);
-		for(auto i = 0; i < dist_filtered_cloud.size(); i++){
-			v_3.addCloud(dist_filtered_cloud[i], rda::CIRCLES, 0.0f, 0.0f, 1.0f, 1.0f);
-			v_3.addCloud(dist_filtered_cloud[i], rda::LINE_STRIP, 0.0f, 0.0f, 1.0f, 1.0f);
-		}
+		v_3.addCloud(raw_dist_cloud, rda::LINE_STRIP, 1.0f, 1.0f, 1.0f, 0.4f);		
+		v_3.addClouds(dist_filtered_cloud, rda::CIRCLES, 1.0f);
+		v_3.addClouds(dist_filtered_cloud, rda::LINE_STRIP, 1.0f);
+		
 		//v_3.addCloud(rdp_dist_cloud, rda::LINE_STRIP, 1.0f, 1.0f, 0.0f, 1.0f);
 		//v_3.addCloud(rdp_dist_cloud, rda::CIRCLES, 1.0f, 0.0f, 0.0f, 1.0f);		
 

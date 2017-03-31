@@ -246,8 +246,9 @@ rda::Point rda::projectionPointToLine(double line_angle, Point& line_mid_point, 
 	return p;
 }
 
-rda::Line rda::maxDiagonal(rda::Line& line_1, rda::Line& line_2){
-	// looking for two points with separated by the largest distance
+// looking for two points with separated by the largest distance
+rda::Line rda::maxDiagonal(rda::Line& line_1, rda::Line& line_2)
+{	
 	std::vector<Line> lines;
 	lines.push_back(rda::Line(line_1.start(), line_2.start()));
 	lines.push_back(rda::Line(line_1.start(), line_2.end()));
