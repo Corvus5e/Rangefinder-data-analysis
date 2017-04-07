@@ -11,8 +11,8 @@
 #include "rda_client\point_cloud.h"
 #include "rda_client\vizualizer.h"
 
-#include <RDAL.h>
-
+//#include <RDAL.h>
+#include <RDALE.h>
 
 using namespace std;
 using namespace client;
@@ -51,7 +51,7 @@ int main(int argc, char* argv[])
 	//basm params
 	int statistacal_kN = atof(client::Console::getParam("-statistacal_kN").c_str());
 	double statistacal_threashold = atof(client::Console::getParam("-statistacal_threashold").c_str());
-	int min_segm_points = atof(client::Console::getParam("-min_segm_points").c_str());
+	//int min_segm_points = atof(client::Console::getParam("-min_segm_points").c_str());
 	double max_dist_diff = atof(client::Console::getParam("-max_dist_diff").c_str());
 	int reduce_median_window = atof(client::Console::getParam("-reduce_median_window").c_str());
 	//double min_rdp_eps = atof(client::Console::getParam("-min_rdp_eps").c_str());
@@ -62,6 +62,14 @@ int main(int argc, char* argv[])
 
 	int minPts = atof(client::Console::getParam("-min_pts").c_str());
 	double eps = atof(client::Console::getParam("-eps").c_str());
+
+	//msm extractor
+	int filter_window = atof(client::Console::getParam("-filter_window").c_str());
+	double filter_error = atof(client::Console::getParam("-filter_error").c_str());	
+	int min_segm_points = atof(client::Console::getParam("-min_segm_points").c_str());
+	double breakpoint_error = atof(client::Console::getParam("-breakpoint_error").c_str());
+	std::string error_file = client::Console::getParam("-error_file");
+	double rdp_error = atof(client::Console::getParam("-rdp_error").c_str());
 
 	std::vector<double> data;
 
@@ -79,9 +87,9 @@ int main(int argc, char* argv[])
 		amount_clock = clock();
 		
 		//casmLineExtractor(&data[0], clustering_eps, clustering_minPts, min_rdp_eps, max_dist, min_part_size, merge_dist, merge_angle, filter_kN, filter_threshold, output, clusters_number);
-		basmLineExtractor(&data[0], statistacal_kN, statistacal_threashold, min_segm_points, max_dist_diff,
+		/*basmLineExtractor(&data[0], statistacal_kN, statistacal_threashold, min_segm_points, max_dist_diff,
 									reduce_median_window,
-									min_rdp_eps, min_rdp_size, output, clusters_number);
+									min_rdp_eps, min_rdp_size, output, clusters_number);*/
 
 		//rdpMinimization(&data[0], min_rdp_eps, output, clusters_number);
 		//lsLineApproximation(&data[0], output, clusters_number);
@@ -93,6 +101,9 @@ int main(int argc, char* argv[])
 		//euclideanClusterExctraction(&data[0], eps, minPts, 9999, output, clusters_number);
 		//adaptiveRDPStD(&data[0], min_rdp_eps, min_rdp_size, output, clusters_number);
 		
+		//std::string error_file("D:\\git\\Rangefinder_Data_Analysis\\scans\\dist_error_measurements\\standart_deviations.txt");
+		extractLines(&data[0], error_file, rdp_error, filter_window, filter_error, min_segm_points, breakpoint_error, merge_dist, merge_angle, output, clusters_number);
+
 		amount_time = ((float)(clock() - amount_clock)) / CLOCKS_PER_SEC;
 		std::cout << "Amount time :" << amount_time  << "sec" << std::endl;
 		

@@ -39,7 +39,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)\RDAL;$(GLUT_ROOT)\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\RDAL;$(GLUT_ROOT)\include;$(SolutionDir)\RDALE;$(IncludePath)</IncludePath>
     <LibraryPath>$(GLUT_ROOT)\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -95,6 +95,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\RDALE\RDALE.vcxproj">
+      <Project>{0285e575-3dfb-4d2e-9abe-683e16f565fc}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\RDAL\RDAL.vcxproj">
       <Project>{f44ed676-f04f-479f-9a66-e2736cf26ed3}</Project>
     </ProjectReference>

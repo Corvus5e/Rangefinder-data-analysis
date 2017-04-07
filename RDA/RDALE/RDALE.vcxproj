@@ -11,9 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{F44ED676-F04F-479F-9A66-E2736CF26ED3}</ProjectGuid>
+    <ProjectGuid>{0285E575-3DFB-4D2E-9ABE-683E16F565FC}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>RDAL</RootNamespace>
+    <RootNamespace>RDALE</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -50,8 +50,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>USE_MSM_EXTRACTOR;USE_CASM_EXTRACTOR;USE_BASM_EXTRACTOR;WIN32;_DEBUG;_WINDOWS;_USRDLL;RDAL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>USE_MSM_EXTRACTOR;WIN32;_DEBUG;_WINDOWS;_USRDLL;RDALE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -66,7 +65,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;RDAL_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;RDALE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -76,7 +75,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="RDAL.h" />
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="RDALE.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
@@ -85,16 +87,11 @@
     <ClCompile Include="..\RDA\rda\cloud_part.cpp" />
     <ClCompile Include="..\RDA\rda\common.cpp" />
     <ClCompile Include="..\RDA\rda\curve.cpp" />
-    <ClCompile Include="..\RDA\rda\filtering.cpp" />
     <ClCompile Include="..\RDA\rda\function\ApproximateMethod.cpp" />
-    <ClCompile Include="..\RDA\rda\function\BisectionMethod.cpp" />
-    <ClCompile Include="..\RDA\rda\function\Derivative.cpp" />
     <ClCompile Include="..\RDA\rda\function\Function.cpp" />
     <ClCompile Include="..\RDA\rda\function\LeastSquares.cpp" />
     <ClCompile Include="..\RDA\rda\line.cpp" />
     <ClCompile Include="..\RDA\rda\line_extraction.cpp" />
-    <ClCompile Include="..\RDA\rda\rangefinder.cpp" />
-    <ClCompile Include="..\RDA\rda\segmentation.cpp" />
     <ClCompile Include="dllmain.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -103,7 +100,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
       </PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="RDAL.cpp" />
+    <ClCompile Include="RDALE.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

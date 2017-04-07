@@ -66,8 +66,7 @@ namespace {
 		return rda::maxDiagonal(p1.approx_line(), pl);	
 	}
 	
-	rda::Line mergeLines(rda::ApproximiedCloudPart l1, rda::ApproximiedCloudPart l2){
-		rda::CloudPtr cloud ( new rda::Cloud);
+	rda::Line mergeLines(rda::ApproximiedCloudPart& l1, rda::ApproximiedCloudPart& l2){
 		double overlapping = 0.0;
 		return rda::middleLine(l1, l2, &overlapping);	
 	}
@@ -607,21 +606,19 @@ void rda::segmentsMerging(std::vector<rda::ApproximiedCloudPart> segments, doubl
 
 			if(i != j){
 				if(rda::areSimilar(segments[i].approx_line(), segments[j].approx_line(), dist_threashold, angle_threashold)){
-					double d = segments[j].approx_line().length() / segments[i].approx_line().length();					
+					//double d = segments[j].approx_line().length() / segments[i].approx_line().length();					
 					double m = segments[j].size() / (double)segments[i].size();
 					if(m <= 1.0){ // j length is smaller than i length
+
 						double overlapping = 0.0;
 						Line mid_line = rda::middleLine(segments[i], segments[j], &overlapping);
-						if( overlapping/mid_line.length() > 0.3) {							
-							if(m > 0.25){
-								segments[i].set_approx_line(mid_line); //merge
-							}
-							else{
-								segments[i].set_approx_line(extendLine(segments[i], segments[j])); //merge
-							}
+
+						if( overlapping/mid_line.length() > 0.3 && m > 0.25){
+
+							segments[i].set_approx_line(mergeLines(segments[i], segments[j]));//mid_line); //merge
 						}
 						else{
-							segments[i].set_approx_line(extendLine(segments[i], segments[j])); //merge						
+							segments[i].set_approx_line(mergeLines(segments[i], segments[j]));//extendLine(segments[i], segments[j])); //merge						
 						}
 
 						segments.erase(segments.begin() + j );
